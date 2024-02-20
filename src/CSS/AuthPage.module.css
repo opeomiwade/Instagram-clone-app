@@ -1,0 +1,40 @@
+.cardDiv {
+  display: flex;
+  flex-direction: column;
+  border: 0.2px solid grey;
+  justify-content: center;
+  align-items: center;
+  width: 350px;
+  flex-shrink: 1;
+  padding: 20px 20px;
+}
+
+.background {
+  background-image: url("https://static.cdninstagram.com/rsrc.php/v3/yh/r/IS7e616CiR2.png");
+  background-position: 0px 0px;
+  background-size: 176px 258px;
+  width: 175px;
+  height: 51px;
+  background-repeat: no-repeat;
+  display: inline-block;
+  margin: 30px 0px;
+}
+
+.imgDiv {
+  display: flex;
+  flex-direction: row;
+}
+
+.imgDiv img {
+  height: 540px;
+  width: 250px;
+}
+
+.iphoneFrame {
+  border: 10px solid black;
+  border-radius: 20px;
+  padding: 10px;
+  display: inline-block;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+

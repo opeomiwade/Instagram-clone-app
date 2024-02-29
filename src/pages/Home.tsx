@@ -3,7 +3,7 @@ import Feed from "../components/Feed";
 import axios from "axios";
 import { useLoaderData } from "react-router";
 import { useDispatch } from "react-redux";
-import { currentUserActions } from "../store/redux-store";
+import { currentUserActions, sidebarActions } from "../store/redux-store";
 import { useEffect } from "react";
 import { PostContextProvider } from "../context/PostContext";
 
@@ -13,8 +13,9 @@ function Home() {
 
   useEffect(() => {
     dispatch(
-      currentUserActions.setCurrentUser(currentUserData as { userData: {} })
+      currentUserActions.setCurrentUser(currentUserData as { userData: {[key:string] :any} })
     );
+    dispatch(sidebarActions.updateSidebarState("home"))
   }, []);
 
   return (
@@ -36,7 +37,7 @@ export async function loader() {
       });
       return response.data;
     } catch (error) {
-      console.log(error);
+      console.log("ebgami " + error);
     }
   }
   return null;

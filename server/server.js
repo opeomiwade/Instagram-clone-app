@@ -13,6 +13,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  updatePassword
 } from "firebase/auth";
 import checkDocumentExists, {
   getUserData,
@@ -41,8 +42,6 @@ function checkAuthorization(req, res, next) {
   }
   next();
 }
-
-app.use(bodyParser.json());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -158,5 +157,10 @@ app.put("/update-document", checkAuthorization, async (req, res) => {
     res.status(401).json("Unauthorized");
   }
 });
+
+app.post("/forgot-password", (req, res) => {
+
+
+})
 
 app.listen(port);

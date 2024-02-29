@@ -10,13 +10,14 @@ const CommentInput: React.FC<CommentInputProps> = ({
   emojiButtonHandler,
   changeHandler,
   onEmojiClick,
+  dialog,
 }) => {
   const inputRef = useRef<HTMLInputElement>();
   return (
     <div className="flex w-full justify-between py-2">
       <input
         name="comment"
-        className="text-[13px] w-full hover: cursor-text p-2 focus: outline-none placeholder:text-[15px]"
+        className="text-[13px] w-full hover: cursor-text p-2 focus: outline-none placeholder:text-[15px] h-[2rem]"
         placeholder="Add a Comment..."
         ref={inputRef as React.Ref<HTMLInputElement>}
         value={comment}
@@ -40,7 +41,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
           <EmojiSVG />
         </button>
         {showEmojiPicker && (
-          <div className="absolute bottom-[100%] min-h-[200px] min-w-[100px]">
+          <div className={`absolute bottom-[100%] min-h-[200px] min-w-[100px] ${dialog! ? "right-0" : "" }`}>
             <EmojiPicker
               style={{ height: "400px", width: "300px" }}
               onEmojiClick={(emojiObj) => onEmojiClick(emojiObj)}

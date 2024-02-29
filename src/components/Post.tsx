@@ -12,12 +12,15 @@ import { updatePost } from "../util/http";
 import CommentInput from "./CommentInput";
 import PostContext from "../context/PostContext";
 import image from "../assets/account circle.jpeg";
-
+import PersonIcon from "@mui/icons-material/Person";
+import { useNavigate } from "react-router";
 
 const Post: React.FC<{ post: postDetails }> = ({ post }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const [comment, setNewComment] = useState<string>("");
   const [showEmojiPicker, setPicker] = useState<boolean>(false);
+  const [showMoreDropDown, setShow] = useState<boolean>(false);
   const {
     likePostHandler,
     savedPostHandler,
@@ -29,6 +32,7 @@ const Post: React.FC<{ post: postDetails }> = ({ post }) => {
     (state: { currentUser: { userData: { [key: string]: any } } }) =>
       state.currentUser.userData
   );
+  const isCurrentUser = post.username === userData.username;
 
   useEffect(() => {
     if (postChanged) {
@@ -65,9 +69,18 @@ const Post: React.FC<{ post: postDetails }> = ({ post }) => {
             {post.username}
           </h4>
         </span>
-        <span>
+        <div className="relative" onClick={() => setShow(!showMoreDropDown)}>
           <MoreIcon className="hover:cursor-pointer" />
-        </span>
+          {showMoreDropDown && (
+            <div className="absolute top-[100%] bg-white rounded-md z-50 border-2 w-[150px]">
+              <button className="flex items-center w-full justify-center p-2" onClick={() => navigate(post.username)}>
+                <PersonIcon /> View Profile
+              </button>
+              <hr />
+              <button className="p-2 text-center w-full">Cancel</button>
+            </div>
+          )}
+        </div>
       </div>
 
       <img

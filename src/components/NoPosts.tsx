@@ -1,16 +1,23 @@
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import { useDispatch } from "react-redux";
 import { sidebarActions } from "../store/redux-store";
+import { useNavigate } from "react-router";
 
 const NoPosts:React.FC<{selectedTab: string}> = ({selectedTab}) => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   function clickHandler(){
-    dispatch(sidebarActions.updateSidebarState("create"))
+    if(selectedTab == "posts"){
+          dispatch(sidebarActions.updateSidebarState("create"))
+    }
+    else{
+      navigate("/home")
+    }
   }
 
   return (
-    <div className="flex flex-col gap-4 items-center my-auto">
+    <div className="flex flex-col gap-4 items-center justify-center h-full">
       <div className="rounded-full border-solid border-2 border-black p-2 hover:cursor-pointer" onClick={clickHandler}>
         <CameraAltOutlinedIcon style={{ fontSize: "40px" }} />
       </div>

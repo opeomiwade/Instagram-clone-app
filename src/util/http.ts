@@ -20,15 +20,35 @@ export async function getPosts() {
 
 export async function updatePost(updatedPost: postDetails) {
   try {
-    const response = await axios.put("http://localhost:3000/update-document",updatedPost, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      }, params:{updateType:"updatepost"}
-    });
+    const response = await axios.put(
+      "http://localhost:3000/update-document",
+      updatedPost,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        params: { updateType: "updatepost" },
+      }
+    );
     return response.data;
   } catch (error) {
     console.log(error);
     return error;
+  }
+}
+
+export async function updateDoc(
+  accessToken: string,
+  requestBody: {},
+  updateType?: string
+) {
+  try {
+    await axios.put("http://localhost:3000/update-document", requestBody, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      params: { updateType },
+    });
+  } catch (error) {
+    console.log(error);
   }
 }
 

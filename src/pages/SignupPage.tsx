@@ -3,7 +3,6 @@ import Footer from "../components/Footer";
 import axios, { AxiosResponse } from "axios";
 import { useActionData, json, redirect } from "react-router";
 import { errorObj } from "./LoginPage";
-import { useDispatch } from "react-redux";
 
 
 function SignupPage() {

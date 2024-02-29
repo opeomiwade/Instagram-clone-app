@@ -38,6 +38,7 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
     event: React.MouseEvent<HTMLImageElement | HTMLButtonElement>,
     post: postDetails
   ) {
+    console.log("called");
     setChanged(true);
     const liked = userData.likedPosts.includes(post.id);
     if (
@@ -54,7 +55,7 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
       dispatch(
         currentUserActions.updateUserData({
           likedPost: post.id,
-          type: liked ? "removelikedpost" : "newlikedpost",
+          type: "likedpost",
         })
       );
       await axios
@@ -82,9 +83,15 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
     showEmojiPicker ? setPicker(!showEmojiPicker) : null;
     setNewComment("");
     setChanged(true);
-    console.log(comment);
     dispatch(
-      allPostsActions.updateComments({ comment: comment, postID: post.id })
+      allPostsActions.updateComments({
+        comment: {
+          comment: comment,
+          profilePic: userData.profilePic,
+          username: userData.username,
+        },
+        postID: post.id,
+      })
     );
   }
 
@@ -94,7 +101,7 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
     dispatch(
       currentUserActions.updateUserData({
         savedPost: post.id,
-        type: saved ? "removesavedpost" : "newsavedpost",
+        type: "savedpost",
       })
     );
     await axios.put(

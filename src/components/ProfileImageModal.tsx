@@ -47,6 +47,25 @@ const ProfileImageModal: React.FC<{
     inputRef.current!.value = "";
   }
 
+  async function removeCurrentPhoto() {
+    dilaogRef.current?.close();
+
+    dispatch(
+      currentUserActions.updateUserData({
+        userData: { profilePic: "" },
+      })
+    );
+    await axios.put(
+      "http://localhost:3000/update-document",
+      { profilePic: "" },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+  }
+
   return createPortal(
     <dialog
       onClose={async () => {
@@ -76,14 +95,7 @@ const ProfileImageModal: React.FC<{
         <hr />
         <button
           className="text-red-500 p-2 font-semibold w-full"
-          onClick={async () => {
-            dispatch(
-              currentUserActions.updateUserData({
-                userData: { profilePic: "" },
-              })
-            );
-            dilaogRef.current?.close();
-          }}
+          onClick={removeCurrentPhoto}
         >
           Remove Current Photo
         </button>

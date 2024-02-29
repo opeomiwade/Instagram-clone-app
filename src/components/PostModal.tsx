@@ -14,6 +14,7 @@ import { useState, useContext } from "react";
 import CommentInput from "./CommentInput";
 import PostContext from "../context/PostContext";
 import { motion } from "framer-motion";
+import Comment from "./Comment";
 
 const PostDialog = () => {
   const dialog = useRef<HTMLDialogElement>();
@@ -64,6 +65,7 @@ const PostDialog = () => {
         onClick={() => {
           dialog.current?.close();
         }}
+        className="z-50"
       >
         <CloseIcon
           style={{
@@ -76,104 +78,122 @@ const PostDialog = () => {
           className="hover:cursor-pointer"
         />
       </button>
-      <div className="xl:container h-[90%] mx-auto">
-        <div className="flex bg-white h-full rounded-r-lg">
-          <img src={post.imageUrl} className="max-w-[60%]" />
-          <div className="w-full z-10">
-            <div className="flex justify-between p-2">
-              <div className="flex gap-2">
+      <div className="flex rounded-r-lg h-[90%] mx-auto bg-white w-[75%]">
+        <img src={post.imageUrl} className="max-w-[60%]" />
+        <div className="w-full">
+          <div className="flex justify-between p-2">
+            <div className="flex gap-2">
+              <img
+                src={post.profilePic}
+                className="rounded-full w-[50px] h-[50px]"
+              />
+              <h3 className="font-bold my-auto">{post.username}</h3>
+            </div>
+
+            <div className="hover:cursor-pointer">
+              <MoreIcon style={{ margin: "8px" }} />
+            </div>
+          </div>
+          <hr />
+          <div className=" h-[65%] p-2 overflow-auto flex flex-col">
+            <div className="w-full flex items-center gap-[20px]">
+              <div className="rounded-full border-2 border-amber-500 p-[2px]">
                 <img
                   src={post.profilePic}
-                  className="rounded-full w-[50px] h-[50px]"
+                  className="rounded-full w-[30px] h-[30px]"
                 />
-                <h3 className="font-bold my-auto">{post.username}</h3>
               </div>
 
-              <div>
-                <MoreIcon style={{ margin: "8px" }} />
-              </div>
-            </div>
-            <hr />
-            <div className=" h-[65%] p-2 overflow-auto">
               <h3 className="font-bold">
                 {`${post.username} `}
                 <span className="font-normal">{post.caption}</span>
               </h3>
             </div>
-            <hr />
-            <div className="flex justify-between p-2 h-[10%]">
-              <div className="flex w-28 mt-2 justify-between">
-                <motion.button
-                  className="hover:cursor-pointer"
-                  whileTap={{
-                    scale: 0.9,
-                    transition: {
-                      duration: 0.2,
-                      type: "spring",
-                      stiffness: 800,
-                    },
-                  }}
-                  onClick={(event) => ctx.likePostHandler(event, post)}
-                >
-                  <FavoriteBorderOutlinedIcon
-                    style={{
-                      fill:
-                        Object.keys(userData).length > 0 &&
-                        userData.likedPosts.includes(post.id)
-                          ? "red"
-                          : "none",
-                      stroke:
-                        Object.keys(userData).length > 0 &&
-                        userData.likedPosts.includes(post.id)
-                          ? "none"
-                          : "black",
-                      strokeWidth: "2px",
-                    }}
-                  />
-                </motion.button>
-                <button className="hover:cursor-pointer ">
-                  <CommentIcon />
-                </button>
-                <button className="hover:cursor-pointer">
-                  <SendOutlinedIcon />
-                </button>
-              </div>
+            {post.comments &&
+              post.comments.length > 0 &&
+              post.comments.map((comment) => {
+                return <Comment comment={comment} />;
+              })}
+          </div>
+          <hr />
+          <div className="flex justify-between p-2 h-[10%]">
+            <div className="flex w-28 mt-2 justify-between">
               <motion.button
-                onClick={() => ctx.savedPostHandler(post)}
+                className="hover:cursor-pointer"
                 whileTap={{
                   scale: 0.9,
-                  transition: { duration: 0.2, type: "spring", stiffness: 800 },
+                  transition: {
+                    duration: 0.2,
+                    type: "spring",
+                    stiffness: 800,
+                  },
+                }}
+                onClick={(event) => {
+                  userData.likedPosts.includes(post.id)
+                    ? dispatch(currentPostActions.decreaseLikes())
+                    : dispatch(currentPostActions.increaseLikes());
+                  ctx.likePostHandler(event, post);
                 }}
               >
-                <BookmarkIcon
+                <FavoriteBorderOutlinedIcon
                   style={{
                     fill:
                       Object.keys(userData).length > 0 &&
-                      userData.savedPosts.includes(post.id)
-                        ? "black"
+                      userData.likedPosts.includes(post.id)
+                        ? "red"
                         : "none",
                     stroke:
                       Object.keys(userData).length > 0 &&
-                      userData.savedPosts.includes(post.id)
+                      userData.likedPosts.includes(post.id)
                         ? "none"
                         : "black",
                     strokeWidth: "2px",
                   }}
                 />
               </motion.button>
+              <button className="hover:cursor-pointer ">
+                <CommentIcon />
+              </button>
+              <button className="hover:cursor-pointer">
+                <SendOutlinedIcon />
+              </button>
             </div>
-            <h3 className="font-bold mb-2 p-2">{`${post.likes} likes`}</h3>
-            <hr />
-            <CommentInput
-              post={post}
-              emojiButtonHandler={emojiButtonHandler}
-              addCommentClickHandler={addCommentClickHandler}
-              changeHandler={inputChangeHandler}
-              onEmojiClick={addEmojiToComment}
-              comment={comment}
-              showEmojiPicker={showEmojiPicker}
-            />
+            <motion.button
+              onClick={() => ctx.savedPostHandler(post)}
+              whileTap={{
+                scale: 0.9,
+                transition: { duration: 0.2, type: "spring", stiffness: 800 },
+              }}
+            >
+              <BookmarkIcon
+                style={{
+                  fill:
+                    Object.keys(userData).length > 0 &&
+                    userData.savedPosts.includes(post.id)
+                      ? "black"
+                      : "none",
+                  stroke:
+                    Object.keys(userData).length > 0 &&
+                    userData.savedPosts.includes(post.id)
+                      ? "none"
+                      : "black",
+                  strokeWidth: "2px",
+                }}
+              />
+            </motion.button>
           </div>
+          <h3 className="font-bold mb-2 p-2">{`${post.likes} likes`}</h3>
+          <hr />
+          <CommentInput
+            dialog={true}
+            post={post}
+            emojiButtonHandler={emojiButtonHandler}
+            addCommentClickHandler={addCommentClickHandler}
+            changeHandler={inputChangeHandler}
+            onEmojiClick={addEmojiToComment}
+            comment={comment}
+            showEmojiPicker={showEmojiPicker}
+          />
         </div>
       </div>
     </dialog>,

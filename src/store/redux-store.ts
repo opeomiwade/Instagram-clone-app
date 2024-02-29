@@ -1,5 +1,5 @@
 import { createSlice, configureStore, PayloadAction } from "@reduxjs/toolkit";
-import { postDetails } from "../types/types";
+import { postDetails, userDetails } from "../types/types";
 
 const currentPostSlice = createSlice({
   name: "current-post",
@@ -7,6 +7,14 @@ const currentPostSlice = createSlice({
   reducers: {
     setCurrentPost(state, action) {
       state.post = { ...action.payload };
+    },
+
+    increaseLikes(state) {
+      state.post.likes = state.post.likes + 1;
+    },
+
+    decreaseLikes(state) {
+      state.post.likes = state.post.likes - 1;
     },
   },
 });
@@ -31,7 +39,7 @@ const sideBarSlice = createSlice({
   },
 });
 
-const userSlice = createSlice({
+const currentUserSlice = createSlice({
   name: "currentUser",
   initialState: { userData: {} as { [key: string]: any } },
   reducers: {
@@ -44,24 +52,25 @@ const userSlice = createSlice({
           state.userData.posts.push(action.payload.newPost);
           break;
 
-        case "newlikedpost":
-          state.userData.likedPosts.push(action.payload.likedPost);
+        case "likedpost":
+          if (state.userData.likedPosts.includes(action.payload.likedPost)) {
+            state.userData.likedPosts = state.userData.likedPosts.filter(
+              (post: number) => post !== action.payload.likedPost
+            );
+          } else {
+            state.userData.likedPosts.push(action.payload.likedPost);
+          }
           break;
 
-        case "removelikedpost":
-          state.userData.likedPosts = state.userData.likedPosts.filter(
-            (post: number) => post !== action.payload.likedPost
-          );
-          break;
+        case "savedpost":
+          if (state.userData.savedPosts.includes(action.payload.savedPost)) {
+            state.userData.savedPosts = state.userData.savedPosts.filter(
+              (post: number) => post !== action.payload.savedPost
+            );
+          } else {
+            state.userData.savedPosts.push(action.payload.savedPost);
+          }
 
-        case "newsavedpost":
-          state.userData.savedPosts.push(action.payload.savedPost);
-          break;
-
-        case "removesavedpost":
-          state.userData.savedPosts = state.userData.savedPosts.filter(
-            (post: number) => post !== action.payload.savedPost
-          );
           break;
 
         case "newcomment":
@@ -77,6 +86,17 @@ const userSlice = createSlice({
             }
           });
           state.userData = { ...state.userData, posts: posts };
+          break;
+
+        case "followaction":
+          if (state.userData.following.includes(action.payload.username)) {
+            state.userData.following = state.userData.following.filter(
+              (username: string) => username !== action.payload.username
+            );
+          } else {
+            state.userData.following.push(action.payload.username);
+          }
+
           break;
 
         default:
@@ -129,17 +149,35 @@ const allPosts = createSlice({
   },
 });
 
+const recentSearches = createSlice({
+  name: "recent searches",
+  initialState: {recents: [] as userDetails[]} ,
+  reducers: { 
+    setRecentSearches(state, action) {
+      state.recents = [...state.recents, action.payload.recent]
+    },
+    clear(state){
+      state.recents = []
+    },
+    removeSearch(state, action){
+      state.recents = state.recents.filter((user) => user.username !== action.payload.username)
+    }
+  }
+});
+
 const store = configureStore({
   reducer: {
     currentPost: currentPostSlice.reducer,
     sidebar: sideBarSlice.reducer,
-    currentUser: userSlice.reducer,
+    currentUser: currentUserSlice.reducer,
     allPosts: allPosts.reducer,
+    recents: recentSearches.reducer
   },
 });
 
 export default store;
 export const currentPostActions = currentPostSlice.actions;
 export const sidebarActions = sideBarSlice.actions;
-export const currentUserActions = userSlice.actions;
+export const currentUserActions = currentUserSlice.actions;
 export const allPostsActions = allPosts.actions;
+export const recentsActions = recentSearches.actions

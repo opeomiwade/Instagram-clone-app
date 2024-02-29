@@ -2,22 +2,20 @@ import React, { useState, useRef } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import Input from "./Input";
 import classes from "../CSS/AuthPage.module.css";
-import { errorObj } from "../pages/LoginPage";
 
-const SignupForm: React.FC<{ error: errorObj }> = ({ error }) => {
+const ForgotPassword = () => {
   const navigate = useNavigate();
   const [disabled, setDisabled] = useState<boolean>(true);
-  const emailRef = useRef<HTMLInputElement>();
+  const confirmPasswordRef = useRef<HTMLInputElement>();
   const passwordRef = useRef<HTMLInputElement>();
-  const usernameRef = useRef<HTMLInputElement>();
-  const nameRef = useRef<HTMLInputElement>();
+  const emailRef = useRef<HTMLInputElement>();
 
   function blurHandler() {
     if (
-      emailRef.current?.value.trim() === "" ||
+      confirmPasswordRef.current?.value.trim() === "" ||
       passwordRef.current?.value.trim() === "" ||
-      usernameRef.current?.value.trim() === "" ||
-      nameRef.current?.value.trim() === ""
+      confirmPasswordRef.current?.value.trim() !==
+        passwordRef.current?.value.trim()
     ) {
       setDisabled(true);
     } else {
@@ -29,43 +27,42 @@ const SignupForm: React.FC<{ error: errorObj }> = ({ error }) => {
       <div className={classes.cardDiv}>
         <i className={classes.background} />
         <p className="font-medium m-2 text-center text-gray-500">
-          Fill in the form below to create an account
+          Enter New Password
         </p>
         <Form method="post" className="flex gap-[1rem] flex-col">
           <Input
             name="email"
             id="email"
-            placeholder="Email"
-            className="rounded-md border-solid border-[1px] w-[300px] p-[5px] text-[12px]"
+            type="email"
+            className="rounded-md border-solid border-[1px] p-[5px] w-[300px] text-[12px]"
+            placeholder="Enter your account email"
             onBlur={blurHandler}
             ref={emailRef as React.Ref<HTMLInputElement>}
           />
           <Input
-            name="name"
-            id="name"
-            type="name"
-            className="rounded-md border-solid border-[1px] p-[5px] w-[300px] text-[12px]"
-            placeholder="Name"
-            onBlur={blurHandler}
-            ref={nameRef as React.Ref<HTMLInputElement>}
-          />
-          <Input
-            name="username"
-            id="username"
-            className="rounded-md border-solid border-[1px] p-[5px] w-[300px] text-[12px]"
-            placeholder="Username"
-            onBlur={blurHandler}
-            ref={usernameRef as React.Ref<HTMLInputElement>}
-          />
-          <Input
             name="password"
-            type="password"
             id="password"
+            type="password"
             className="rounded-md border-solid border-[1px] p-[5px] w-[300px] text-[12px]"
-            placeholder="Password"
+            placeholder="Enter New Password"
             onBlur={blurHandler}
             ref={passwordRef as React.Ref<HTMLInputElement>}
           />
+          <Input
+            name="confirmpassword"
+            id="confirm"
+            type="password"
+            placeholder="Confirm Password"
+            className={`rounded-md border-solid border-[1px] w-[300px] p-[5px] text-[12px] ${
+              confirmPasswordRef.current?.value.trim() !==
+              passwordRef.current?.value.trim()
+                ? "border-red-500"
+                : ""
+            }`}
+            onBlur={blurHandler}
+            ref={confirmPasswordRef as React.Ref<HTMLInputElement>}
+          />
+
           <button
             className={`text-white font-semibold rounded-md bg-blue-300 ${
               !disabled ? "hover:bg-blue-500 p-[5px]" : ""
@@ -73,11 +70,12 @@ const SignupForm: React.FC<{ error: errorObj }> = ({ error }) => {
             type="submit"
             disabled={disabled}
           >
-            {"  Sign Up"}
+            Change Password
           </button>
-          {error && (
+          {confirmPasswordRef.current?.value.trim() !==
+            passwordRef.current?.value.trim() && (
             <div className="text-[12px] text-red-700  bg-red-300 text-center rounded-md p-1">
-              {error.message}
+              Passwords are not the same, please re-enter
             </div>
           )}
         </Form>
@@ -97,4 +95,4 @@ const SignupForm: React.FC<{ error: errorObj }> = ({ error }) => {
   );
 };
 
-export default SignupForm;
+export default ForgotPassword;

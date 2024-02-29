@@ -11,7 +11,7 @@ export type postDetails = {
   id: number;
   username: string;
   imageUrl: string;
-  comments: string[];
+  comments: { [key: string]: any }[];
   likes: number;
   caption: string;
   profilePic: string;
@@ -21,7 +21,7 @@ export type PostState = {
   id: number;
   username: string;
   likes: number;
-  comments: string[];
+  comments: { [key: string]: any }[];
   imageUrl: string;
   caption: string;
 };
@@ -38,11 +38,24 @@ export type handleFileChangeParameters = {
 };
 
 export type CommentInputProps = {
+  dialog?: boolean;
   post: postDetails;
   addCommentClickHandler: () => void;
   emojiButtonHandler: () => void;
   changeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onEmojiClick: (emojiObj: {[key:string] : any}) => void
-  comment:string
-  showEmojiPicker:boolean
+  onEmojiClick: (emojiObj: { [key: string]: any }) => void;
+  comment: string;
+  showEmojiPicker: boolean;
 };
+
+export type userDetails = {
+  email: string,
+  followers: [],
+  following: [],
+  likedPosts: [],
+  savedPosts: [],
+  profilePic: string,
+  username: string,
+  posts: [],
+  name: string
+}

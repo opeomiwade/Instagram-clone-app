@@ -16,9 +16,9 @@ export default async function checkDocumentExists(username, db) {
   return docSnapShot.exists();
 }
 
-export async function getUserData(email, db) {
+export async function getUserData(searchTerm, db) {
   const collectionRef = collection(db, "users");
-  const q = query(collectionRef, where("email", "==", email));
+  const q = query(collectionRef, where("email", "==", searchTerm));
   const querySnap = await getDocs(q);
   const userData = [];
 
@@ -54,17 +54,22 @@ function shuffleArray(array) {
 
 export async function updateDocument(db, username, updateType, newData) {
   const docRef = doc(db, "users", username); // for current user actions
-  if (updateType === "newPost") {
+  if (updateType === "post") {
     updateDoc(docRef, { posts: arrayUnion(newData) });
-  } else if (updateType === "newlikedpost") {
+  } 
+  else if (updateType === "newlikedpost") {
     updateDoc(docRef, { likedPosts: arrayUnion(newData.id) });
-  } else if (updateType === "removelikedpost") {
+  } 
+  else if (updateType === "removelikedpost") {
     updateDoc(docRef, { likedPosts: arrayRemove(newData.id) });
-  } else if (updateType === "removesavedpost") {
+  } 
+  else if (updateType === "removesavedpost") {
     updateDoc(docRef, { savedPosts: arrayRemove(newData.id) });
-  } else if (updateType === "newsavedpost") {
+  } 
+  else if (updateType === "newsavedpost") {
     updateDoc(docRef, { savedPosts: arrayUnion(newData.id) });
-  } else if (updateType === "updatepost") {
+  } 
+  else if (updateType === "updatepost") {
     // docRef changes here as I am updating the post data of the user that owns the post, could be the currently logged in user or a different user
     const docRef = doc(db, "users", newData.username);
     const docSnap = await getDoc(docRef);
@@ -76,8 +81,12 @@ export async function updateDocument(db, username, updateType, newData) {
       }
     });
     updateDoc(docRef, { posts: updatedPosts });
-  } else {
-    console.log(newData)
+  } 
+  else if( updateType=== "name"){
+    updateDoc(docRef, { name: newData.name });
+  }
+  else {
+    const docRef = doc(db, "users", newData.username);
     updateDoc(docRef, newData);
   }
 }

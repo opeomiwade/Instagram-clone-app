@@ -45,7 +45,7 @@ const AuthForm: React.FC<{ error: errorObj }> = ({error}) => {
       >
        { " Log in"}
       </button>
-      <a href="instagram.com" className="text-blue-500 text-center w-fit mx-auto">
+      <a href="/forgot-password" className="text-blue-500 text-center w-fit mx-auto">
         Forgot Password?
       </a>
       {error && <div className="text-[12px] text-red-700  bg-red-300 text-center rounded-md p-1">{error.message}</div>}

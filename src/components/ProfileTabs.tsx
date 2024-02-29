@@ -26,7 +26,8 @@ const Tab: React.FC<TabProps> = ({ isSelected, onSelect, children }) => {
 const ProfileTabs: React.FC<{
   selectedType: string;
   onSelectType: (tabName: string) => void;
-}> = ({ selectedType, onSelectType }) => {
+  currentUser: boolean;
+}> = ({ selectedType, onSelectType, currentUser }) => {
   return (
     <menu className="flex justify-center gap-[4rem] mt-4 border-t-[1px] border-gray-200 ">
       <Tab
@@ -34,15 +35,17 @@ const ProfileTabs: React.FC<{
         onSelect={() => onSelectType("posts")}
       >
         <ViewCompactIcon />
-        Post
+        Posts
       </Tab>
-      <Tab
-        isSelected={selectedType === "saved"}
-        onSelect={() => onSelectType("saved")}
-      >
-        <BookmarkOutlined />
-        Saved
-      </Tab>
+      {currentUser && (
+        <Tab
+          isSelected={selectedType === "saved"}
+          onSelect={() => onSelectType("saved")}
+        >
+          <BookmarkOutlined />
+          Saved
+        </Tab>
+      )}
     </menu>
   );
 };

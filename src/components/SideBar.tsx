@@ -8,18 +8,17 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import classes from "../CSS/SideBar.module.css";
 import { useNavigate } from "react-router";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { sidebarActions } from "../store/redux-store";
 import { useSelector, useDispatch } from "react-redux";
+import image from "../assets/account circle.jpeg";
 
-function SideBar() {
+const SideBar = () => {
   const getIconStyle = (iconName: string) => ({
     stroke: selection === iconName ? "none" : "black",
     strokeWidth: "1.15px",
     fill: selection === iconName ? "black" : "none",
     fontSize: "30px",
   });
-
   const [iconText, setVisible] = useState<boolean | undefined>();
   const [bottomAside, setAside] = useState<boolean | undefined>();
   const navigate = useNavigate();
@@ -36,12 +35,13 @@ function SideBar() {
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        if (entry.contentRect.width < 920) {
+        if (entry.contentRect.width < 920 && selection != "search") {
           setVisible(false);
-        } else {
+        } else if (selection !== "search") {
           setVisible(true);
         }
         if (entry.contentRect.width < 650) {
+          dispatch(sidebarActions.updateSidebarState("home"));
           setAside(true);
         } else {
           setAside(false);
@@ -49,7 +49,10 @@ function SideBar() {
       }
     });
     resizeObserver.observe(document.documentElement);
-  });
+    if (selection === "search") {
+      setVisible(() => false);
+    }
+  }, [selection]);
 
   return (
     <aside
@@ -153,21 +156,18 @@ function SideBar() {
         <button
           onClick={() => {
             dispatch(sidebarActions.updateSidebarState("profile"));
-            navigate("ope");
+            navigate(userData.username);
           }}
           className={`${
             !bottomAside && "w-[100%]"
           } p-2 flex items-start hover:bg-gray-200 rounded-md cursor-pointer`}
         >
-          {!userData.profilePic ? (
-            <AccountCircleOutlinedIcon style={getIconStyle("profile")} />
-          ) : (
-            <img
-              src={userData.profilePic}
-              style={{ width: "2rem", height: "2rem" }}
-              className="rounded-full my-auto"
-            />
-          )}
+          <img
+            src={userData.profilePic || image}
+            style={{ width: "2rem", height: "2rem" }}
+            className="rounded-full my-auto"
+          />
+
           {iconText && (
             <a
               style={{
@@ -205,6 +205,6 @@ function SideBar() {
       </div>
     </aside>
   );
-}
+};
 
 export default SideBar;

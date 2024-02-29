@@ -63,7 +63,7 @@ const Create = () => {
         "http://localhost:3000/update-document",
         userData.posts[(userData.posts.length) - 1],
         {
-          params: { updateType: "newpost" },
+          params: { updateType: "post" },
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },

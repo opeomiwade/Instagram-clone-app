@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <footer className="pt-3 mt-4 text-xs">
+    <footer className="pt-3 mt-4 text-xs fixed bottom-8 w-full">
       <ul className="nav justify-content-center border-bottom mb-3">
         <li className="nav-item">
           <a className="nav-link px-2 text-body-secondary">Home</a>

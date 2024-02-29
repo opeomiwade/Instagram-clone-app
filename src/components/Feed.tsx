@@ -8,9 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { allPostsActions } from "../store/redux-store";
 
 function Feed() {
-  const { data, isLoading, isStale, isSuccess } = useQuery<{
-    posts: postDetails[];
-  }>({
+  const { data, isLoading, isStale, isSuccess } = useQuery({
     queryKey: ["all-posts"],
     queryFn: getPosts,
     staleTime: 30000,
@@ -19,7 +17,6 @@ function Feed() {
   const posts = useSelector(
     (state: { allPosts: { posts: postDetails[] } }) => state.allPosts.posts
   );
-
   useEffect(() => {
     if (isSuccess) {
       dispatch(allPostsActions.setPosts(data?.posts));

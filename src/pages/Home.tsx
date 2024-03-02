@@ -13,9 +13,11 @@ function Home() {
 
   useEffect(() => {
     dispatch(
-      currentUserActions.setCurrentUser(currentUserData as { userData: {[key:string] :any} })
+      currentUserActions.setCurrentUser(
+        currentUserData as { userData: { [key: string]: any } }
+      )
     );
-    dispatch(sidebarActions.updateSidebarState("home"))
+    dispatch(sidebarActions.updateSidebarState("home"));
   }, []);
 
   return (
@@ -37,7 +39,7 @@ export async function loader() {
       });
       return response.data;
     } catch (error) {
-      console.log("ebgami " + error);
+      console.log(error);
     }
   }
   return null;

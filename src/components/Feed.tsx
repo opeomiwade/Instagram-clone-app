@@ -7,6 +7,7 @@ import { getPosts } from "../util/http";
 import { useSelector, useDispatch } from "react-redux";
 import { allPostsActions } from "../store/redux-store";
 
+
 function Feed() {
   const { data, isLoading, isStale, isSuccess } = useQuery({
     queryKey: ["all-posts"],

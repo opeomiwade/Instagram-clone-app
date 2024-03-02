@@ -8,4 +8,6 @@
     border-top: 1px solid #ccc; 
     align-items: center;
     padding: 1rem; 
+    background-color: white;
+    z-index: 10;
   }

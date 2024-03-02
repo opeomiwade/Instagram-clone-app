@@ -56,7 +56,7 @@ const PostDialog = () => {
 
   return createPortal(
     <dialog
-      className={`${classes.modal}`}
+      className={`z-50 ${classes.modal}`}
       open={Object.keys(post).length > 0}
       ref={dialog as React.Ref<HTMLDialogElement>}
       onClose={() => dispatch(currentPostActions.setCurrentPost({}))}
@@ -65,7 +65,7 @@ const PostDialog = () => {
         onClick={() => {
           dialog.current?.close();
         }}
-        className="z-50"
+        className="z-30"
       >
         <CloseIcon
           style={{

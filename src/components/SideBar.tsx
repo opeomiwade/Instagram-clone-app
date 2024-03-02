@@ -19,13 +19,16 @@ const SideBar = () => {
     fill: selection === iconName ? "black" : "none",
     fontSize: "30px",
   });
-  const [iconText, setVisible] = useState<boolean | undefined>();
+  // const [iconText, setVisible] = useState<boolean | undefined>();
   const [bottomAside, setAside] = useState<boolean | undefined>();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const selection = useSelector(
     (state: { sidebar: { sidebarSelection: string } }) =>
       state.sidebar.sidebarSelection
+  );
+  const iconText = useSelector(
+    (state: { sidebar: { sidebarText: boolean } }) => state.sidebar.sidebarText
   );
   const userData = useSelector(
     (state: { currentUser: { userData: { [key: string]: any } } }) =>
@@ -35,13 +38,14 @@ const SideBar = () => {
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        if (entry.contentRect.width < 920 && selection != "search") {
-          setVisible(false);
-        } else if (selection !== "search") {
-          setVisible(true);
+        if (entry.contentRect.width < 920 && selection !== "search") {
+          dispatch(sidebarActions.sidebarText(false));
+        } else if (selection === "search" || selection === "messages") {
+          dispatch(sidebarActions.sidebarText(false));
+        } else {
+          dispatch(sidebarActions.sidebarText(true));
         }
-        if (entry.contentRect.width < 650) {
-          dispatch(sidebarActions.updateSidebarState("home"));
+        if (entry.contentRect.width < 650 && selection !== "search") {
           setAside(true);
         } else {
           setAside(false);
@@ -49,8 +53,9 @@ const SideBar = () => {
       }
     });
     resizeObserver.observe(document.documentElement);
-    if (selection === "search") {
-      setVisible(() => false);
+
+    return () =>{
+      resizeObserver.disconnect()
     }
   }, [selection]);
 
@@ -95,29 +100,32 @@ const SideBar = () => {
             </a>
           )}
         </button>
-        <button
-          onClick={() => {
-            dispatch(sidebarActions.updateSidebarState("search"));
-          }}
-          className={`${
-            !bottomAside && "w-[100%]"
-          } p-2 flex items-start hover:bg-gray-200 rounded-md cursor-pointer`}
-        >
-          <SearchIcon style={getIconStyle("search")} />
-          {iconText && (
-            <a
-              style={{
-                fontWeight: selection === "search" ? "bold" : "",
-                paddingLeft: "15px",
-              }}
-            >
-              Search
-            </a>
-          )}
-        </button>
+        {!bottomAside && (
+          <button
+            onClick={() => {
+              dispatch(sidebarActions.updateSidebarState("search"));
+            }}
+            className={`${
+              !bottomAside && "w-[100%]"
+            } p-2 flex items-start hover:bg-gray-200 rounded-md cursor-pointer`}
+          >
+            <SearchIcon style={getIconStyle("search")} />
+            {iconText && (
+              <a
+                style={{
+                  fontWeight: selection === "search" ? "bold" : "",
+                  paddingLeft: "15px",
+                }}
+              >
+                Search
+              </a>
+            )}
+          </button>
+        )}
         <button
           onClick={() => {
             dispatch(sidebarActions.updateSidebarState("messages"));
+            navigate("messages");
           }}
           className={`${
             !bottomAside && "w-[100%]"

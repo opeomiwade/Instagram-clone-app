@@ -11,6 +11,7 @@ import ErrorPage from "./components/ErrorPage";
 import ForgotPasswordPage, {
   action as forgotpass,
 } from "./pages/ForgotPasswordPage";
+import MessagesPage, {loader as messagesLoader} from "./pages/MessagesPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -34,6 +35,7 @@ function App() {
       children: [
         { index: true, element: <HomePage />, loader: checkAuth },
         { path: ":username", element: <ProfilePage />, loader: profileLoader },
+        { path: "messages", element: <MessagesPage />, loader: messagesLoader},
       ],
     },
   ]);

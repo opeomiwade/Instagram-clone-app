@@ -21,7 +21,11 @@ const currentPostSlice = createSlice({
 
 const sideBarSlice = createSlice({
   name: "sidebar",
-  initialState: { sidebarSelection: "home", createModal: false },
+  initialState: {
+    sidebarSelection: "home",
+    createModal: false,
+    sidebarText: false,
+  },
   reducers: {
     updateSidebarState(state, action) {
       if (action.payload === "home") {
@@ -35,6 +39,10 @@ const sideBarSlice = createSlice({
       } else if (action.payload === "profile") {
         state.sidebarSelection = "profile";
       }
+    },
+
+    sidebarText(state, action) {
+      state.sidebarText = action.payload;
     },
   },
 });
@@ -151,18 +159,20 @@ const allPosts = createSlice({
 
 const recentSearches = createSlice({
   name: "recent searches",
-  initialState: {recents: [] as userDetails[]} ,
-  reducers: { 
+  initialState: { recents: [] as userDetails[] },
+  reducers: {
     setRecentSearches(state, action) {
-      state.recents = [...state.recents, action.payload.recent]
+      state.recents = [...state.recents, action.payload.recent];
     },
-    clear(state){
-      state.recents = []
+    clear(state) {
+      state.recents = [];
     },
-    removeSearch(state, action){
-      state.recents = state.recents.filter((user) => user.username !== action.payload.username)
-    }
-  }
+    removeSearch(state, action) {
+      state.recents = state.recents.filter(
+        (user) => user.username !== action.payload.username
+      );
+    },
+  },
 });
 
 const store = configureStore({
@@ -171,7 +181,7 @@ const store = configureStore({
     sidebar: sideBarSlice.reducer,
     currentUser: currentUserSlice.reducer,
     allPosts: allPosts.reducer,
-    recents: recentSearches.reducer
+    recents: recentSearches.reducer,
   },
 });
 
@@ -180,4 +190,4 @@ export const currentPostActions = currentPostSlice.actions;
 export const sidebarActions = sideBarSlice.actions;
 export const currentUserActions = currentUserSlice.actions;
 export const allPostsActions = allPosts.actions;
-export const recentsActions = recentSearches.actions
+export const recentsActions = recentSearches.actions;

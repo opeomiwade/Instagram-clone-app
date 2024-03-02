@@ -58,4 +58,5 @@ export type userDetails = {
   username: string,
   posts: [],
   name: string
+  // messages:[]
 }

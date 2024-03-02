@@ -32,7 +32,6 @@ const Post: React.FC<{ post: postDetails }> = ({ post }) => {
     (state: { currentUser: { userData: { [key: string]: any } } }) =>
       state.currentUser.userData
   );
-  const isCurrentUser = post.username === userData.username;
 
   useEffect(() => {
     if (postChanged) {

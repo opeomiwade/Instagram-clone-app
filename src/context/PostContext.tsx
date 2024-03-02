@@ -6,8 +6,8 @@ import { postDetails } from "../types/types";
 
 const PostContext = createContext({
   likePostHandler: async (
-    event: React.MouseEvent<HTMLImageElement | HTMLButtonElement>,
-    post: postDetails
+    _event: React.MouseEvent<HTMLImageElement | HTMLButtonElement>,
+    _post: postDetails
   ) => {},
   savedPostHandler: async (_post: postDetails) => {},
   addCommentHandler: async (

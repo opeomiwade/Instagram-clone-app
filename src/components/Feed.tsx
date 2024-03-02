@@ -9,7 +9,7 @@ import { allPostsActions } from "../store/redux-store";
 
 
 function Feed() {
-  const { data, isLoading, isStale, isSuccess } = useQuery({
+  const { data,isSuccess } = useQuery({
     queryKey: ["all-posts"],
     queryFn: getPosts,
     staleTime: 30000,

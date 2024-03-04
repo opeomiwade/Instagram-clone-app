@@ -3,7 +3,7 @@ import classes from "../CSS/AuthPage.module.css";
 import Footer from "../components/Footer";
 import screenshot1 from "../assets/screenshot1-2x.png";
 import screenshot2 from "../assets/screenshot2-2x.png";
-import { useNavigate } from "react-router";
+import { useNavigate} from "react-router";
 import { json, redirect, useActionData } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -67,7 +67,7 @@ export async function action({ request }: { request: Request }) {
   let credentials = Object.fromEntries(formData.entries());
   try {
     const response = await axios.post(
-      "http://localhost:3000/login",
+      "https://instagram-clone-app-server.onrender.com/login",
       credentials
     );
     localStorage.setItem("accessToken", response.data.accessToken)

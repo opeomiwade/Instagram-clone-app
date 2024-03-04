@@ -77,7 +77,7 @@ function Message() {
               </div>
               <h2 className="font-bold text-md">Messages</h2>
             </div>
-            <div className="bg-black mt-4 overflow-auto"></div>
+            <div className="bg-black mt-4 overflow-y-auto"></div>
           </motion.div>
           {showChat ? (
             <ChatView selectedUsers={chatUsers!} />

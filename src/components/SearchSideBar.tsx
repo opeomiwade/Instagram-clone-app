@@ -72,7 +72,7 @@ function SearchSideBar() {
         </button>
       </div>
       <hr className="mt-8" />
-      <div className="h-[80%] overflow-auto">
+      <div className="h-[80%] overflow-y-auto">
         {results === undefined ? (
           <Recents recentSearches={recents} />
         ) : results.length === 0 ? (

@@ -50,8 +50,8 @@ export type CommentInputProps = {
 
 export type userDetails = {
   email: string,
-  followers: [],
-  following: [],
+  followers: string[],
+  following: string[],
   likedPosts: [],
   savedPosts: [],
   profilePic: string,

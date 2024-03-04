@@ -4,7 +4,7 @@ import { TabProps } from "../types/types.ts";
 import BookmarkOutlined from "@mui/icons-material/BookmarkOutlined";
 import ViewCompactIcon from "@mui/icons-material/ViewCompact";
 
-const Tab: React.FC<TabProps> = ({ isSelected, onSelect, children }) => {
+export const Tab: React.FC<TabProps> = ({ isSelected, onSelect, children }) => {
   return (
     <li>
       {isSelected && (

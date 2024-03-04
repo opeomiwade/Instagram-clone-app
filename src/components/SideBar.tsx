@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import classes from "../CSS/SideBar.module.css";
 import { useNavigate } from "react-router";
-import { sidebarActions } from "../store/redux-store";
+import { recentsActions, sidebarActions } from "../store/redux-store";
 import { useSelector, useDispatch } from "react-redux";
 import image from "../assets/account circle.jpeg";
 
@@ -195,8 +195,9 @@ const SideBar = () => {
           } p-2 flex items-start hover:bg-gray-200 rounded-md cursor-pointer`}
           onClick={async () => {
             dispatch(sidebarActions.updateSidebarState("home"));
+            dispatch(recentsActions.clear())
             localStorage.removeItem("accessToken");
-            await axios.post("http://localhost:3000/sign-out");
+            await axios.post("https://instagram-clone-app-server.onrender.com/sign-out");
             navigate("/");
           }}
         >

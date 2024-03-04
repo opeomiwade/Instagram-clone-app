@@ -104,7 +104,12 @@ const currentUserSlice = createSlice({
           } else {
             state.userData.following.push(action.payload.username);
           }
+          break;
 
+        case "removefollower":
+          state.userData.followers = state.userData.followers.filter(
+            (username: string) => username != action.payload.username
+          );
           break;
 
         default:

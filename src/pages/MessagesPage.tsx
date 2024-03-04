@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import Message from "../components/Message";
+import Message from "../components/MessageView";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { currentUserActions, sidebarActions } from "../store/redux-store";
@@ -23,7 +23,7 @@ export default MessagesPage;
 
 export async function loader() {
   try {
-    const response = await axios.get("http://localhost:3000/user-data", {
+    const response = await axios.get("https://instagram-clone-app-server.onrender.com/user-data", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

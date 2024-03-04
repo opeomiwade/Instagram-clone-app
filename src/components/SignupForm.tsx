@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import Input from "./Input";
 import classes from "../CSS/AuthPage.module.css";
+import { useNavigation } from "react-router-dom";
 import { errorObj } from "../pages/LoginPage";
 
 const SignupForm: React.FC<{ error: errorObj }> = ({ error }) => {
@@ -10,6 +11,7 @@ const SignupForm: React.FC<{ error: errorObj }> = ({ error }) => {
   const emailRef = useRef<HTMLInputElement>();
   const passwordRef = useRef<HTMLInputElement>();
   const usernameRef = useRef<HTMLInputElement>();
+  const navigation = useNavigation();
   const nameRef = useRef<HTMLInputElement>();
 
   function blurHandler() {
@@ -68,12 +70,14 @@ const SignupForm: React.FC<{ error: errorObj }> = ({ error }) => {
           />
           <button
             className={`text-white font-semibold rounded-md bg-blue-300 ${
-              !disabled ? "hover:bg-blue-500 p-[5px]" : ""
+              !disabled || navigation.state === "submitting"
+                ? "hover:bg-blue-500 p-[5px]"
+                : ""
             } `}
             type="submit"
             disabled={disabled}
           >
-            {"  Sign Up"}
+            {navigation.state === "submitting" ? "Signing Up..." : "Sign Up"}
           </button>
           {error && (
             <div className="text-[12px] text-red-700  bg-red-300 text-center rounded-md p-1">

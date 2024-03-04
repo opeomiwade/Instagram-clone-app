@@ -5,7 +5,7 @@ import { currentPostActions } from "../store/redux-store";
 const Content:React.FC<{posts: postDetails[]}> = ({posts}) => {
     const dispatch = useDispatch()
   return (
-    <div className="h-full mx-auto grid grid-cols-3 gap-4 p-2 overflow-auto">
+    <div className="h-full mx-auto grid grid-cols-3 gap-4 p-2">
       {posts.map((post: postDetails) => {
         return (
           <div

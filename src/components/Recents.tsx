@@ -2,12 +2,14 @@ import { userDetails } from "../types/types";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useDispatch } from "react-redux";
 import { recentsActions } from "../store/redux-store";
+import { useNavigate } from "react-router";
 import React from "react";
 
 const Recents: React.FC<{ recentSearches: userDetails[] }> = ({
   recentSearches,
 }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function removeSearchHandler(event: React.MouseEvent<HTMLButtonElement>) {
     const username = event.currentTarget.id;
@@ -30,6 +32,7 @@ const Recents: React.FC<{ recentSearches: userDetails[] }> = ({
           <div
             id={user.username}
             key={user.username}
+            onClick={() => navigate(user.username)}
             className="flex justify-between mt-4 items-center w-full hover:cursor-pointer hover:bg-gray-200 p-2 rounded-md"
           >
             <div className="flex gap-4 items-center">
@@ -46,7 +49,7 @@ const Recents: React.FC<{ recentSearches: userDetails[] }> = ({
               <ClearIcon style={{ fill: "gray" }} />
             </button>
           </div>
-        )
+        );
       })}
     </>
   );

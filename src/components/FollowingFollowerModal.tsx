@@ -18,7 +18,7 @@ const List: React.FC<{
 }> = ({ title, userInfo, closeModal, isCurrentUser }) => {
   const dialogRef = useRef<HTMLDialogElement>();
   const [followingList, setFollowingList] = useState<userDetails[]>();
-  const [results, setSearchResults] = useState<userDetails[]>();
+  const [_results, setSearchResults] = useState<userDetails[]>();
   const [followersList, setFollowersList] = useState<userDetails[]>([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();

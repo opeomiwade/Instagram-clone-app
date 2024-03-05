@@ -41,11 +41,9 @@ const AuthForm: React.FC<{ error: errorObj }> = ({ error }) => {
         onBlur={blurHandler}
       />
       <button
-        className={`text-white font-semibold rounded-md bg-blue-300 ${
-          !disabled || navigation.state === "submitting"
-            ? "hover:bg-blue-800 p-[5px]"
-            : ""
-        }`}
+        className={`text-white font-semibold rounded-md ${
+          navigation.state === "submitting" ? "bg-blue-800" : "bg-blue-300"
+        }  ${!disabled ? "hover:bg-blue-800 p-[5px]" : ""}`}
         type="submit"
         disabled={disabled}
       >

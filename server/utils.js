@@ -82,7 +82,7 @@ export async function updateDocument(db, username, updateType, newData) {
     });
     updateDoc(docRef, { posts: updatedPosts });
   } 
-  else if( updateType=== "name"){
+  else if( updateType === "name"){
     updateDoc(docRef, { name: newData.name });
   }
   else {

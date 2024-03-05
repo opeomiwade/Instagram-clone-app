@@ -25,4 +25,13 @@ dist-ssr
 
 .env
 
+# firebase hosting config files
+
+firebase.json
+firestore.indexes.json
+firestore.rules
+storage.rules
+.firebaserc
+/.firebase
+
 

@@ -18,6 +18,7 @@ const Create = () => {
   const dialogRef = useRef<HTMLDialogElement>();
   const [imageFileUrl, setUrl] = useState<string>();
   const [caption, setCaption] = useState<string>("");
+  const [sharing, setSharing] = useState<boolean>(false)
   const open = useSelector(
     (state: { sidebar: { createModal: boolean } }) => state.sidebar.createModal
   );
@@ -27,6 +28,7 @@ const Create = () => {
   );
 
   async function shareButtonHandler() {
+    setSharing(true)
     try {
       const imageUrl = await uploadImage(
         fileInputRef.current!.files![0],
@@ -50,6 +52,7 @@ const Create = () => {
     } catch (error: any) {
       return json({ error });
     }
+    setSharing(false)
     dialogRef.current?.close();
   }
 
@@ -60,7 +63,7 @@ const Create = () => {
     fileInputRef.current!.value = "";
     await axios
       .put(
-        "https://instagram-clone-app-server.onrender.com/update-document",
+        "https://localhost:3000/update-document",
         userData.posts[(userData.posts.length) - 1],
         {
           params: { updateType: "post" },
@@ -154,7 +157,7 @@ const Create = () => {
               className="font-bold text-blue-500 text-right"
               onClick={shareButtonHandler}
             >
-              Share
+              {sharing ? "Sharing..." : "Share"}
             </button>
           </h3>
 

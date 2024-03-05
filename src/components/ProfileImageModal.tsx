@@ -37,7 +37,7 @@ const ProfileImageModal: React.FC<{
     );
     await axios.put(
       "https://instagram-clone-app-server.onrender.com/update-document",
-      { profilePic: url },
+      { profilePic: url, username: userData.username },
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

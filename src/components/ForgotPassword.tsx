@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import Input from "./Input";
 import classes from "../CSS/AuthPage.module.css";
@@ -6,22 +6,46 @@ import classes from "../CSS/AuthPage.module.css";
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [disabled, setDisabled] = useState<boolean>(true);
-  const confirmPasswordRef = useRef<HTMLInputElement>();
-  const passwordRef = useRef<HTMLInputElement>();
-  const emailRef = useRef<HTMLInputElement>();
+  const [passwordMatch, setMatch] = useState<boolean>(true);
+  const [formInput, setFormInput] = useState<{
+    email: string;
+    new: string;
+    confirm: string;
+  }>({ email: "", new: "", confirm: "" });
 
-  function blurHandler() {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (formInput.new !== formInput.confirm) {
+        setMatch(false);
+      }
+      else{
+        setMatch(true)
+      }
+    }, 500);
     if (
-      confirmPasswordRef.current?.value.trim() === "" ||
-      passwordRef.current?.value.trim() === "" ||
-      confirmPasswordRef.current?.value.trim() !==
-        passwordRef.current?.value.trim()
+      passwordMatch &&
+      (formInput.email.trim() !== "" &&
+      formInput.new.trim() !== "" &&
+      formInput.confirm.trim() !== "")
     ) {
-      setDisabled(true);
-    } else {
       setDisabled(false);
     }
+    else{
+      setDisabled(true)
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [formInput, passwordMatch]);
+
+  function changeHandler(event: React.ChangeEvent<HTMLInputElement>) {
+    const { id, value } = event.currentTarget;
+    setFormInput((prevState) => {
+      return { ...prevState, [id]: value };
+    });
   }
+
   return (
     <div className="flex flex-col items-center mt-[3rem]">
       <div className={classes.cardDiv}>
@@ -35,32 +59,29 @@ const ForgotPassword = () => {
             id="email"
             type="email"
             className="rounded-md border-solid border-[1px] p-[5px] w-[300px] text-[12px]"
+            onChange={changeHandler}
+            value={formInput.email}
             placeholder="Enter your account email"
-            onBlur={blurHandler}
-            ref={emailRef as React.Ref<HTMLInputElement>}
           />
           <Input
-            name="password"
-            id="password"
+            name="newpassword"
+            id="new"
             type="password"
             className="rounded-md border-solid border-[1px] p-[5px] w-[300px] text-[12px]"
+            onChange={changeHandler}
+            value={formInput.new}
             placeholder="Enter New Password"
-            onBlur={blurHandler}
-            ref={passwordRef as React.Ref<HTMLInputElement>}
           />
           <Input
             name="confirmpassword"
             id="confirm"
             type="password"
             placeholder="Confirm Password"
+            onChange={changeHandler}
+            value={formInput.confirm}
             className={`rounded-md border-solid border-[1px] w-[300px] p-[5px] text-[12px] ${
-              confirmPasswordRef.current?.value.trim() !==
-              passwordRef.current?.value.trim()
-                ? "border-red-500"
-                : ""
+              false ? "border-red-500" : ""
             }`}
-            onBlur={blurHandler}
-            ref={confirmPasswordRef as React.Ref<HTMLInputElement>}
           />
 
           <button
@@ -72,8 +93,7 @@ const ForgotPassword = () => {
           >
             Change Password
           </button>
-          {confirmPasswordRef.current?.value.trim() !==
-            passwordRef.current?.value.trim() && (
+          {!passwordMatch && (
             <div className="text-[12px] text-red-700  bg-red-300 text-center rounded-md p-1">
               Passwords are not the same, please re-enter
             </div>

@@ -4,7 +4,9 @@ export type InputProps = {
   placeholder: string;
   type?: string;
   className: string;
-  onBlur: React.FocusEventHandler<HTMLInputElement>;
+  value: string;
+  onBlur? : React.FocusEvent<HTMLInputElement>;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
 };
 
 export type postDetails = {
@@ -57,6 +59,7 @@ export type userDetails = {
   profilePic: string,
   username: string,
   posts: [],
-  name: string
+  name: string,
+  password: string;
   // messages:[]
 }

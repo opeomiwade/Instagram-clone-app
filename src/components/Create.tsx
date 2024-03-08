@@ -63,7 +63,7 @@ const Create = () => {
     fileInputRef.current!.value = "";
     await axios
       .put(
-        "https://localhost:3000/update-document",
+        "http://localhost:3000/update-document",
         userData.posts[(userData.posts.length) - 1],
         {
           params: { updateType: "post" },

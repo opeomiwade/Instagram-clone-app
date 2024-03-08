@@ -9,6 +9,13 @@ import {
   arrayRemove,
   arrayUnion,
 } from "firebase/firestore";
+import {
+  scrypt,
+  scryptSync,
+  randomFill,
+  createCipheriv,
+  createDecipheriv,
+} from "crypto";
 
 export default async function checkDocumentExists(username, db) {
   const docRef = doc(db, "users", username);
@@ -16,9 +23,9 @@ export default async function checkDocumentExists(username, db) {
   return docSnapShot.exists();
 }
 
-export async function getUserData(searchTerm, db) {
+export async function getUserData(email, db) {
   const collectionRef = collection(db, "users");
-  const q = query(collectionRef, where("email", "==", searchTerm));
+  const q = query(collectionRef, where("email", "==", email));
   const querySnap = await getDocs(q);
   const userData = [];
 
@@ -56,20 +63,15 @@ export async function updateDocument(db, username, updateType, newData) {
   const docRef = doc(db, "users", username); // for current user actions
   if (updateType === "post") {
     updateDoc(docRef, { posts: arrayUnion(newData) });
-  } 
-  else if (updateType === "newlikedpost") {
+  } else if (updateType === "newlikedpost") {
     updateDoc(docRef, { likedPosts: arrayUnion(newData.id) });
-  } 
-  else if (updateType === "removelikedpost") {
+  } else if (updateType === "removelikedpost") {
     updateDoc(docRef, { likedPosts: arrayRemove(newData.id) });
-  } 
-  else if (updateType === "removesavedpost") {
+  } else if (updateType === "removesavedpost") {
     updateDoc(docRef, { savedPosts: arrayRemove(newData.id) });
-  } 
-  else if (updateType === "newsavedpost") {
+  } else if (updateType === "newsavedpost") {
     updateDoc(docRef, { savedPosts: arrayUnion(newData.id) });
-  } 
-  else if (updateType === "updatepost") {
+  } else if (updateType === "updatepost") {
     // docRef changes here as I am updating the post data of the user that owns the post, could be the currently logged in user or a different user
     const docRef = doc(db, "users", newData.username);
     const docSnap = await getDoc(docRef);
@@ -81,12 +83,58 @@ export async function updateDocument(db, username, updateType, newData) {
       }
     });
     updateDoc(docRef, { posts: updatedPosts });
-  } 
-  else if( updateType === "name"){
+  } else if (updateType === "name") {
     updateDoc(docRef, { name: newData.name });
-  }
-  else {
+  } else {
     const docRef = doc(db, "users", newData.username);
     updateDoc(docRef, newData);
+  }
+}
+
+export function encryptPassword(plainPassword, passwordGenerateKey) {
+  console.log(plainPassword)
+  console.log(passwordGenerateKey)
+
+  return new Promise((resolve, reject) => {
+    const algorithm = "aes-192-cbc";
+    try {
+      const key = scryptSync(passwordGenerateKey, "salt", 24);
+      randomFill(new Uint8Array(16), (err, iv) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        const cipher = createCipheriv(algorithm, key, iv);
+        let encrypted = cipher.update(plainPassword, "utf8", "hex");
+        encrypted += cipher.final("hex");
+        let encryptedPasswordWithIV = iv.toString() + "+" + encrypted;
+        resolve(encryptedPasswordWithIV);
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+export function decryptPassword(encryptedPassword, passwordGenerateKey) {
+  try {
+    const algorithm = "aes-192-cbc";
+    // Use the async `crypto.scrypt()` instead.
+    const key = scryptSync(passwordGenerateKey, "salt", 24);
+    // Extract IV from password
+    const ivBytes = encryptedPassword.split("+")[0].split(",").map(byte => parseInt(byte))
+    const iv = new Uint8Array(ivBytes);
+
+    // //Extract password
+    const encrypted = encryptedPassword.split("+")[1];
+
+    const decipher = createDecipheriv(algorithm, key, iv);
+
+    // Encrypted using same algorithm, key and iv.
+    let decrypted = decipher.update(encrypted, "hex", "utf8");
+    decrypted += decipher.final("utf8");
+    return decrypted;
+  } catch (error) {
+    console.log(error);
   }
 }

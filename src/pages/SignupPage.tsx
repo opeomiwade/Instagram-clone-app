@@ -21,7 +21,7 @@ export async function action({ request }: { request: Request }) {
   let credentials = Object.fromEntries(formData.entries());
   try {
     const response: AxiosResponse = await axios.post(
-      "https://instagram-clone-app-server.onrender.com/signup",
+      "http://localhost:3000/signup",
       credentials
     );
     localStorage.setItem("accessToken", response.data.accessToken);

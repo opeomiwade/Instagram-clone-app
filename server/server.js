@@ -2,23 +2,21 @@ import bodyParser from "body-parser";
 import express from "express";
 import { initializeApp } from "firebase/app";
 import cors from "cors";
-import 'dotenv/config'
-import {
-  doc,
-  setDoc,
-  getFirestore
-} from "firebase/firestore";
+import "dotenv/config";
+import { doc, setDoc, getFirestore } from "firebase/firestore";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  updatePassword
+  updatePassword,
 } from "firebase/auth";
 import checkDocumentExists, {
   getUserData,
   getAllPosts,
   updateDocument,
+  encryptPassword,
+  decryptPassword,
 } from "./utils.js";
 
 const firebaseConfig = {
@@ -96,15 +94,17 @@ app.post("/signup", async (req, res) => {
       password
     );
     const user = userCredential.user;
+    const encryptedPassword = await encryptPassword(password, username);
     await setDoc(doc(db, "users", username), {
       email,
       username,
+      password: encryptedPassword,
       name,
       posts: [],
       following: [],
       followers: [],
       likedPosts: [],
-      savedPosts:[]
+      savedPosts: [],
     });
     res.status(201).json({
       message: "User created successfully",
@@ -158,9 +158,26 @@ app.put("/update-document", checkAuthorization, async (req, res) => {
   }
 });
 
-app.post("/forgot-password", (req, res) => {
-
-
-})
+app.post("/forgot-password", async (req, res) => {
+  const {newpassword, email} = req.body
+  try {
+    const userData = await getUserData(email, db);
+    const password = decryptPassword(
+      userData[0].password,
+      userData[0].username
+    );
+    const user = await (
+      await signInWithEmailAndPassword(auth, email, password)
+    ).user;
+    await updatePassword(user, newpassword);
+    console.log(newpassword)
+    const updatedEncryptedPassword = await encryptPassword(newpassword, userData[0].username);
+    console.log(updatedEncryptedPassword)
+    await updateDocument(db, userData[0].username,"",{username:userData[0].username,password: updatedEncryptedPassword})
+    res.status(200).json("Password changed");
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 app.listen(port);

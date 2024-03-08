@@ -1,5 +1,5 @@
 import ForgotPassword from "../components/ForgotPassword";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { redirect} from "react-router";
 import Footer from "../components/Footer";
 
@@ -18,12 +18,11 @@ export async function action({ request }: { request: Request }) {
   let formData = await request.formData();
   let credentials = Object.fromEntries(formData.entries());
   try {
-    const response: AxiosResponse = await axios.post(
-      "https://instagram-clone-app-server.onrender.com/forgot-password",
+    await axios.post(
+      "http://localhost:3000/forgot-password",
       credentials
     );
-    localStorage.setItem("accessToken", response.data.accessToken);
-    return redirect("/home");
+    return redirect("/");
   } catch (error) {
     console.log(error)
   }

@@ -63,7 +63,7 @@ const Create = () => {
     fileInputRef.current!.value = "";
     await axios
       .put(
-        "http://localhost:3000/update-document",
+        "https://instagram-clone-app-server.onrender.com/update-document",
         userData.posts[(userData.posts.length) - 1],
         {
           params: { updateType: "post" },

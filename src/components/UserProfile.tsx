@@ -88,7 +88,7 @@ const Profile: React.FC<{ userData: { [key: string]: any } }> = ({
   async function logOutHandler() {
     dispatch(sidebarActions.updateSidebarState("home"));
     localStorage.removeItem("accessToken");
-    await axios.post("http://localhost:3000/sign-out");
+    await axios.post("https://instagram-clone-app-server.onrender.com/sign-out");
     navigate("/");
   }
 

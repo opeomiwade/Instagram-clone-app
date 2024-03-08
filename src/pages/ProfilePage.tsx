@@ -31,7 +31,7 @@ export async function loader({ request }: { request: Request }) {
   const userData = await getUserDoc(username);
   let response;
   try {
-    response = await axios.get("http://localhost:3000/user-data", {
+    response = await axios.get("https://instagram-clone-app-server.onrender.com/user-data", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

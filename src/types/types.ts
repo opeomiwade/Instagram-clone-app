@@ -4,8 +4,8 @@ export type InputProps = {
   placeholder: string;
   type?: string;
   className: string;
-  value: string;
-  onBlur? : React.FocusEvent<HTMLInputElement>;
+  value?: string;
+  onBlur? : React.FocusEventHandler<HTMLInputElement>;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
 };
 

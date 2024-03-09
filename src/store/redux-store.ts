@@ -16,6 +16,11 @@ const currentPostSlice = createSlice({
     decreaseLikes(state) {
       state.post.likes = state.post.likes - 1;
     },
+
+    addComment(state, action){
+      state.post.comments.push(action.payload.newcomment)
+
+    }
   },
 });
 
@@ -122,7 +127,7 @@ const currentUserSlice = createSlice({
 
 const allPosts = createSlice({
   name: "allPosts",
-  initialState: { posts: [{} as postDetails] },
+  initialState: {posts:[] as postDetails[]},
   reducers: {
     setPosts(state, action) {
       state.posts = [...action.payload];

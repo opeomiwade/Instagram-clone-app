@@ -38,7 +38,6 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
     event: React.MouseEvent<HTMLImageElement | HTMLButtonElement>,
     post: postDetails
   ) {
-    console.log("called");
     setChanged(true);
     const liked = userData.likedPosts.includes(post.id);
     if (

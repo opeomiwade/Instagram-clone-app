@@ -28,6 +28,7 @@ const Post: React.FC<{ post: postDetails }> = ({ post }) => {
     setChanged,
     addCommentHandler,
   } = useContext(PostContext);
+  
   const userData = useSelector(
     (state: { currentUser: { userData: { [key: string]: any } } }) =>
       state.currentUser.userData

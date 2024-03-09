@@ -2,8 +2,8 @@ import { useDispatch } from "react-redux";
 import { postDetails } from "../types/types";
 import { currentPostActions } from "../store/redux-store";
 
-const Content:React.FC<{posts: postDetails[]}> = ({posts}) => {
-    const dispatch = useDispatch()
+const Content: React.FC<{ posts: postDetails[] }> = ({ posts }) => {
+  const dispatch = useDispatch();
   return (
     <div className="h-full mx-auto grid grid-cols-3 gap-4 p-2">
       {posts.map((post: postDetails) => {
@@ -25,4 +25,4 @@ const Content:React.FC<{posts: postDetails[]}> = ({posts}) => {
   );
 };
 
-export default Content
+export default Content;

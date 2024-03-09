@@ -17,7 +17,7 @@ const NoPosts:React.FC<{selectedTab: string}> = ({selectedTab}) => {
   }
 
   return (
-    <div className="flex flex-col gap-4 items-center justify-center h-full">
+    <div className="flex flex-col gap-4 items-center justify-center">
       <div className="rounded-full border-solid border-2 border-black p-2 hover:cursor-pointer" onClick={clickHandler}>
         <CameraAltOutlinedIcon style={{ fontSize: "40px" }} />
       </div>

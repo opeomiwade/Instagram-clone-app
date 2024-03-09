@@ -28,10 +28,10 @@ function Feed() {
     <>
       <PostModal />
       <div className="flex flex-col mx-auto my-[90px]">
-        {posts.length > 1 &&
+        {posts.length > 0 ?
           posts.map((post) => {
             return <Post key={post.id} post={post} />;
-          })}
+          }) : <h1 className="font-bold text-2xl">No Posts</h1>}
       </div>
     </>
   );

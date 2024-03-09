@@ -15,12 +15,18 @@ import CommentInput from "./CommentInput";
 import PostContext from "../context/PostContext";
 import { motion } from "framer-motion";
 import Comment from "./Comment";
+import { updatePost } from "../util/http";
 
 const PostDialog = () => {
   const dialog = useRef<HTMLDialogElement>();
   const [showEmojiPicker, setPicker] = useState<boolean>(false);
   const [comment, setNewComment] = useState<string>("");
   const ctx = useContext(PostContext);
+
+  const sidebarState = useSelector(
+    (state: { sidebar: { sidebarSelection: string } }) =>
+      state.sidebar.sidebarSelection
+  );
 
   const post = useSelector(
     (state: { currentPost: { post: postDetails } }) => state.currentPost.post
@@ -37,6 +43,15 @@ const PostDialog = () => {
   }
 
   function addCommentClickHandler() {
+    dispatch(
+      currentPostActions.addComment({
+        newcomment: {
+          comment,
+          username: userData.username,
+          profilePic: userData.profilePic,
+        },
+      })
+    );
     ctx.addCommentHandler(
       post,
       comment,
@@ -59,7 +74,14 @@ const PostDialog = () => {
       className={`z-50 ${classes.modal}`}
       open={Object.keys(post).length > 0}
       ref={dialog as React.Ref<HTMLDialogElement>}
-      onClose={() => dispatch(currentPostActions.setCurrentPost({}))}
+      onClose={() => {
+        dispatch(currentPostActions.setCurrentPost({}));
+        if (sidebarState === "profile") {
+          // only perform this action when the user open the modal in the userprofile page
+          console.log("here");
+          updatePost(post);
+        }
+      }}
     >
       <button
         onClick={() => {

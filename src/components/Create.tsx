@@ -11,6 +11,7 @@ import { json } from "react-router";
 import { currentUserActions, sidebarActions } from "../store/redux-store";
 import handleFileChange from "../util/handleFileChange";
 import uploadImage from "../util/uploadImage";
+import queryClient from "../util/http";
 
 const Create = () => {
   const fileInputRef = useRef<HTMLInputElement>();
@@ -18,7 +19,7 @@ const Create = () => {
   const dialogRef = useRef<HTMLDialogElement>();
   const [imageFileUrl, setUrl] = useState<string>();
   const [caption, setCaption] = useState<string>("");
-  const [sharing, setSharing] = useState<boolean>(false)
+  const [sharing, setSharing] = useState<boolean>(false);
   const open = useSelector(
     (state: { sidebar: { createModal: boolean } }) => state.sidebar.createModal
   );
@@ -28,7 +29,7 @@ const Create = () => {
   );
 
   async function shareButtonHandler() {
-    setSharing(true)
+    setSharing(true);
     try {
       const imageUrl = await uploadImage(
         fileInputRef.current!.files![0],
@@ -52,7 +53,7 @@ const Create = () => {
     } catch (error: any) {
       return json({ error });
     }
-    setSharing(false)
+    setSharing(false);
     dialogRef.current?.close();
   }
 
@@ -64,7 +65,7 @@ const Create = () => {
     await axios
       .put(
         "https://instagram-clone-app-server.onrender.com/update-document",
-        userData.posts[(userData.posts.length) - 1],
+        userData.posts[userData.posts.length - 1],
         {
           params: { updateType: "post" },
           headers: {
@@ -73,6 +74,7 @@ const Create = () => {
         }
       )
       .catch((error) => console.log(error));
+    queryClient.invalidateQueries({ queryKey: ["all-posts"] });
   }
 
   return createPortal(

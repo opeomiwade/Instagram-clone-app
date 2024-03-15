@@ -5,12 +5,12 @@ export type InputProps = {
   type?: string;
   className: string;
   value?: string;
-  onBlur? : React.FocusEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
 };
 
 export type postDetails = {
-  id: number;
+  id: string;
   username: string;
   imageUrl: string;
   comments: { [key: string]: any }[];
@@ -20,7 +20,7 @@ export type postDetails = {
 };
 
 export type PostState = {
-  id: number;
+  id: string;
   username: string;
   likes: number;
   comments: { [key: string]: any }[];
@@ -51,15 +51,24 @@ export type CommentInputProps = {
 };
 
 export type userDetails = {
-  email: string,
-  followers: string[],
-  following: string[],
-  likedPosts: [],
-  savedPosts: [],
-  profilePic: string,
-  username: string,
-  posts: [],
-  name: string,
+  email: string;
+  followers: string[];
+  following: string[];
+  likedPosts: [];
+  savedPosts: [];
+  profilePic: string;
+  username: string;
+  posts: [];
+  name: string;
   password: string;
+  archivedPosts: postDetails[];
   // messages:[]
-}
+};
+
+export type HeaderProps = {
+  userData: { [key: string]: any };
+  isCurrentUser: boolean;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  currentUser: { [key: string]: any };
+  openModal: () => void
+};

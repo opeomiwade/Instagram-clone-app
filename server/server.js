@@ -105,6 +105,7 @@ app.post("/signup", async (req, res) => {
       followers: [],
       likedPosts: [],
       savedPosts: [],
+      archivedPosts: [],
     });
     res.status(201).json({
       message: "User created successfully",
@@ -159,7 +160,7 @@ app.put("/update-document", checkAuthorization, async (req, res) => {
 });
 
 app.post("/forgot-password", async (req, res) => {
-  const {newpassword, email} = req.body
+  const { newpassword, email } = req.body;
   try {
     const userData = await getUserData(email, db);
     const password = decryptPassword(
@@ -170,10 +171,16 @@ app.post("/forgot-password", async (req, res) => {
       await signInWithEmailAndPassword(auth, email, password)
     ).user;
     await updatePassword(user, newpassword);
-    console.log(newpassword)
-    const updatedEncryptedPassword = await encryptPassword(newpassword, userData[0].username);
-    console.log(updatedEncryptedPassword)
-    await updateDocument(db, userData[0].username,"",{username:userData[0].username,password: updatedEncryptedPassword})
+    console.log(newpassword);
+    const updatedEncryptedPassword = await encryptPassword(
+      newpassword,
+      userData[0].username
+    );
+    console.log(updatedEncryptedPassword);
+    await updateDocument(db, userData[0].username, "", {
+      username: userData[0].username,
+      password: updatedEncryptedPassword,
+    });
     res.status(200).json("Password changed");
   } catch (error) {
     console.log(error);

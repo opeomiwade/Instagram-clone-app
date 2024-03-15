@@ -6,10 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getPosts } from "../util/http";
 import { useSelector, useDispatch } from "react-redux";
 import { allPostsActions } from "../store/redux-store";
-
+import { CircularProgress } from "@mui/material";
 
 function Feed() {
-  const { data,isSuccess } = useQuery({
+  const { data, isSuccess, isLoading } = useQuery({
     queryKey: ["all-posts"],
     queryFn: getPosts,
     staleTime: 30000,
@@ -27,12 +27,19 @@ function Feed() {
   return (
     <>
       <PostModal />
-      <div className="flex flex-col mx-auto my-[90px]">
-        {posts.length > 0 ?
-          posts.map((post) => {
-            return <Post key={post.id} post={post} />;
-          }) : <h1 className="font-bold text-2xl">No Posts</h1>}
-      </div>
+      {isLoading ? (
+        <CircularProgress />
+      ) : (
+        <div className="flex flex-col mx-auto my-[90px]">
+          {posts.length > 0 ? (
+            posts.map((post) => {
+              return <Post key={post.id} post={post} />;
+            })
+          ) : (
+            <h1 className="font-bold text-2xl">No Posts</h1>
+          )}
+        </div>
+      )}
     </>
   );
 }

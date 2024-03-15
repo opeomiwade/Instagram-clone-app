@@ -10,19 +10,30 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 import {
-  scrypt,
   scryptSync,
   randomFill,
   createCipheriv,
   createDecipheriv,
 } from "crypto";
 
+/**
+ * checks if document exists
+ * @param {*} username
+ * @param {*} db
+ * @returns {DocumentSnapshot<DocumentData, DocumentData>}
+ */
 export default async function checkDocumentExists(username, db) {
   const docRef = doc(db, "users", username);
   const docSnapShot = await getDoc(docRef);
   return docSnapShot.exists();
 }
 
+/**
+ * Method to get user data
+ * @param {*} email
+ * @param {*} db
+ * @returns {Object} object containing user details
+ */
 export async function getUserData(email, db) {
   const collectionRef = collection(db, "users");
   const q = query(collectionRef, where("email", "==", email));
@@ -35,6 +46,11 @@ export async function getUserData(email, db) {
   return userData;
 }
 
+/**
+ * Aysnchronous function to get all  posts from firestore backend.
+ * @param {*} db
+ * @returns {Array} array containing all posts
+ */
 export async function getAllPosts(db) {
   const collectionRef = collection(db, "users");
   const q = query(collectionRef, where("posts", "!=", null));
@@ -51,6 +67,11 @@ export async function getAllPosts(db) {
   return shuffleArray(allPosts);
 }
 
+/**
+ * utility method to shufflr array
+ * @param {*} array
+ * @returns {Array} shuffled array
+ */
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1)); // Generate random index from 0 to i
@@ -59,6 +80,13 @@ function shuffleArray(array) {
   return array;
 }
 
+/**
+ * Updates document in firestore backend based on the updateType
+ * @param db
+ * @param {string} username
+ * @param {string} updateType
+ * @param {Object} newData
+ */
 export async function updateDocument(db, username, updateType, newData) {
   const docRef = doc(db, "users", username); // for current user actions
   if (updateType === "post") {
@@ -91,9 +119,16 @@ export async function updateDocument(db, username, updateType, newData) {
   }
 }
 
+/**
+ * Method to encrypt user password
+ * Allows for safe storage in the firestore backend
+ * @param {*} plainPassword
+ * @param {*} passwordGenerateKey
+ * @returns
+ */
 export function encryptPassword(plainPassword, passwordGenerateKey) {
-  console.log(plainPassword)
-  console.log(passwordGenerateKey)
+  console.log(plainPassword);
+  console.log(passwordGenerateKey);
 
   return new Promise((resolve, reject) => {
     const algorithm = "aes-192-cbc";
@@ -116,13 +151,22 @@ export function encryptPassword(plainPassword, passwordGenerateKey) {
   });
 }
 
+/**
+ * Method to decrypt user password extracted from firestore backend
+ * @param {*} encryptedPassword
+ * @param {*} passwordGenerateKey
+ * @returns
+ */
 export function decryptPassword(encryptedPassword, passwordGenerateKey) {
   try {
     const algorithm = "aes-192-cbc";
     // Use the async `crypto.scrypt()` instead.
     const key = scryptSync(passwordGenerateKey, "salt", 24);
     // Extract IV from password
-    const ivBytes = encryptedPassword.split("+")[0].split(",").map(byte => parseInt(byte))
+    const ivBytes = encryptedPassword
+      .split("+")[0]
+      .split(",")
+      .map((byte) => parseInt(byte));
     const iv = new Uint8Array(ivBytes);
 
     // //Extract password

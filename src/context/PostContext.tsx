@@ -19,6 +19,9 @@ const PostContext = createContext({
   ) => {},
   postChanged: false,
   setChanged: (_newValue: React.SetStateAction<boolean>) => {},
+  deletePostHandler: (_postId: string) => {},
+  archivePostHandler: (_post: postDetails) => {},
+  unArchivePostHandler : (_post: postDetails) => {}
 });
 
 export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
@@ -59,7 +62,7 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
       );
       await axios
         .put(
-          "https://instagram-clone-app-server.onrender.com/update-document",
+          "http://localhost:3000/update-document",
           { id: post.id },
           {
             params: { updateType: liked ? "removelikedpost" : "newlikedpost" },
@@ -94,6 +97,33 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
     );
   }
 
+  function deletePostHandler(postId: string) {
+    dispatch(
+      currentUserActions.updateUserData({ postId: postId, type: "deletepost" })
+    );
+  }
+
+  function archivePostHandler(post: postDetails) {
+    dispatch(
+      currentUserActions.updateUserData({ post: post, type: "archive-action" })
+    );
+    dispatch(
+      currentUserActions.updateUserData({
+        postId: post.id,
+        type: "deletepost",
+      })
+    );
+  }
+
+  function unArchivePostHandler(post: postDetails) {
+    dispatch(
+      currentUserActions.updateUserData({ post: post, type: "archive-action" })
+    );
+    dispatch(
+      currentUserActions.updateUserData({ newPost: post, type: "newpost" })
+    );
+  }
+
   async function savedPostHandler(post: postDetails) {
     setChanged(true);
     const saved = userData.savedPosts.includes(post.id);
@@ -104,7 +134,7 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
       })
     );
     await axios.put(
-      "https://instagram-clone-app-server.onrender.com/update-document",
+      "http://localhost:3000/update-document",
       { id: post.id },
       {
         headers: {
@@ -121,6 +151,9 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
     savedPostHandler,
     postChanged,
     setChanged,
+    deletePostHandler,
+    archivePostHandler,
+    unArchivePostHandler
   };
 
   return <PostContext.Provider value={values}>{children}</PostContext.Provider>;

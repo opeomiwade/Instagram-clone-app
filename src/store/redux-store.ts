@@ -17,10 +17,9 @@ const currentPostSlice = createSlice({
       state.post.likes = state.post.likes - 1;
     },
 
-    addComment(state, action){
-      state.post.comments.push(action.payload.newcomment)
-
-    }
+    addComment(state, action) {
+      state.post.comments.push(action.payload.newcomment);
+    },
   },
 });
 
@@ -117,6 +116,23 @@ const currentUserSlice = createSlice({
           );
           break;
 
+        case "deletepost":
+          state.userData.posts = state.userData.posts.filter(
+            (post: postDetails) => post.id != action.payload.postId
+          );
+          break;
+        case "archive-action":
+          if (
+            state.userData.archivedPosts.some((post:postDetails) => post.id === action.payload.post.id)
+          ) {
+            state.userData.archivedPosts = state.userData.archivedPosts.filter(
+              (post: postDetails) => post.id !== action.payload.post.id
+            );
+          } else {
+            state.userData.archivedPosts.push(action.payload.post);
+          }
+          break;
+
         default:
           state.userData = { ...state.userData, ...action.payload.userData };
           break;
@@ -127,7 +143,7 @@ const currentUserSlice = createSlice({
 
 const allPosts = createSlice({
   name: "allPosts",
-  initialState: {posts:[] as postDetails[]},
+  initialState: { posts: [] as postDetails[] },
   reducers: {
     setPosts(state, action) {
       state.posts = [...action.payload];

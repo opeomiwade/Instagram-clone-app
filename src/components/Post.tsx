@@ -12,12 +12,10 @@ import { updatePost } from "../util/http";
 import CommentInput from "./CommentInput";
 import PostContext from "../context/PostContext";
 import image from "../assets/account circle.jpeg";
-import PersonIcon from "@mui/icons-material/Person";
-import { useNavigate } from "react-router";
+import MoreDropDown from "./MoreDropdown";
 
 const Post: React.FC<{ post: postDetails }> = ({ post }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
   const [comment, setNewComment] = useState<string>("");
   const [showEmojiPicker, setPicker] = useState<boolean>(false);
   const [showMoreDropDown, setShow] = useState<boolean>(false);
@@ -28,7 +26,7 @@ const Post: React.FC<{ post: postDetails }> = ({ post }) => {
     setChanged,
     addCommentHandler,
   } = useContext(PostContext);
-  
+
   const userData = useSelector(
     (state: { currentUser: { userData: { [key: string]: any } } }) =>
       state.currentUser.userData
@@ -71,15 +69,7 @@ const Post: React.FC<{ post: postDetails }> = ({ post }) => {
         </span>
         <div className="relative" onClick={() => setShow(!showMoreDropDown)}>
           <MoreIcon className="hover:cursor-pointer" />
-          {showMoreDropDown && (
-            <div className="absolute top-[100%] bg-white rounded-md z-50 border-2 w-[150px]">
-              <button className="flex items-center w-full justify-center p-2" onClick={() => navigate(post.username)}>
-                <PersonIcon /> View Profile
-              </button>
-              <hr />
-              <button className="p-2 text-center w-full">Cancel</button>
-            </div>
-          )}
+          {showMoreDropDown && <MoreDropDown post={post} />}
         </div>
       </div>
 

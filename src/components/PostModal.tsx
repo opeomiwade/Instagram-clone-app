@@ -16,11 +16,15 @@ import PostContext from "../context/PostContext";
 import { motion } from "framer-motion";
 import Comment from "./Comment";
 import { updatePost } from "../util/http";
+import MoreDropDown from "./MoreDropdown";
 
-const PostDialog = () => {
+const PostDialog: React.FC<{ isCurrentUser: boolean }> = ({
+  isCurrentUser,
+}) => {
   const dialog = useRef<HTMLDialogElement>();
   const [showEmojiPicker, setPicker] = useState<boolean>(false);
   const [comment, setNewComment] = useState<string>("");
+  const [showMoreDropDown, setShow] = useState<boolean>(false);
   const ctx = useContext(PostContext);
 
   const sidebarState = useSelector(
@@ -69,16 +73,20 @@ const PostDialog = () => {
     setNewComment(event.target.value);
   }
 
+  function closeModal() {
+    setShow(false);
+    dialog.current?.close();
+  }
+
   return createPortal(
     <dialog
-      className={`z-50 ${classes.modal}`}
+      className={`${classes.modal}`}
       open={Object.keys(post).length > 0}
       ref={dialog as React.Ref<HTMLDialogElement>}
       onClose={() => {
         dispatch(currentPostActions.setCurrentPost({}));
         if (sidebarState === "profile") {
           // only perform this action when the user open the modal in the userprofile page
-          console.log("here");
           updatePost(post);
         }
       }}
@@ -112,8 +120,18 @@ const PostDialog = () => {
               <h3 className="font-bold my-auto">{post.username}</h3>
             </div>
 
-            <div className="hover:cursor-pointer">
+            <div
+              className="hover:cursor-pointer relative"
+              onClick={() => setShow(!showMoreDropDown)}
+            >
               <MoreIcon style={{ margin: "8px" }} />
+              {showMoreDropDown && (
+                <MoreDropDown
+                  post={post}
+                  isCurrentUser={isCurrentUser}
+                  close={closeModal}
+                />
+              )}
             </div>
           </div>
           <hr />

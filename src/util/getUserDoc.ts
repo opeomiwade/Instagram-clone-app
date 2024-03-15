@@ -22,6 +22,10 @@ async function getUserDoc(username: string) {
   }
 }
 
+/**
+ * Asynchronous method to retrieve all users from firestore backend
+ * @returns {userDetails[]}  an array of all users.
+ */
 export async function getAllUsers() {
   const collRef = collection(db, "users");
   const collSnap = await getDocs(collRef);

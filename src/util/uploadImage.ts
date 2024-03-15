@@ -19,6 +19,13 @@ export const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const storage = getStorage(firebaseApp);
 
+/**
+ * Method to upload user image to firebase storage bucket.
+ * @param {File} imageUpload - image file to upload
+ * @param {string} username - username to construct storage path
+ * @param {string} pathUrl - base path url in firebase storage
+ * @returns {Promise<String>} - A promise that resolves to the download URL of the uploaded image.
+ */
 export default async function uploadImage(imageUpload: File, username: string, pathUrl:string) {
   if (imageUpload) {
     const imageRef = ref(

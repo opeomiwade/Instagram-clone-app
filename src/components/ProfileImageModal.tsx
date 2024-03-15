@@ -36,7 +36,7 @@ const ProfileImageModal: React.FC<{
       currentUserActions.updateUserData({ userData: { profilePic: url } })
     );
     await axios.put(
-      "http://localhost:3000/update-document",
+      "https://instagram-clone-app-server.onrender.com/update-document",
       { profilePic: url, username: userData.username },
       {
         headers: {
@@ -56,7 +56,7 @@ const ProfileImageModal: React.FC<{
       })
     );
     await axios.put(
-      "http://localhost:3000/update-document",
+      "https://instagram-clone-app-server.onrender.com/update-document",
       { profilePic: "" },
       {
         headers: {

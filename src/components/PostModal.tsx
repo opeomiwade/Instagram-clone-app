@@ -18,7 +18,7 @@ import Comment from "./Comment";
 import { updatePost } from "../util/http";
 import MoreDropDown from "./MoreDropdown";
 
-const PostDialog: React.FC<{ isCurrentUser: boolean }> = ({
+const PostDialog: React.FC<{ isCurrentUser?: boolean }> = ({
   isCurrentUser,
 }) => {
   const dialog = useRef<HTMLDialogElement>();

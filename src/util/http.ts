@@ -6,7 +6,7 @@ const queryClient = new QueryClient();
 
 export async function getPosts() {
   try {
-    const response = await axios.get("http://localhost:3000/all-posts", {
+    const response = await axios.get("https://instagram-clone-app-server.onrender.com/all-posts", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -27,7 +27,7 @@ export async function getPosts() {
 export async function updatePost(updatedPost: postDetails) {
   try {
     const response = await axios.put(
-      "http://localhost:3000/update-document",
+      "https://instagram-clone-app-server.onrender.com/update-document",
       updatedPost,
       {
         headers: {
@@ -55,7 +55,7 @@ export async function updateDoc(
   updateType?: string
 ) {
   try {
-    await axios.put("http://localhost:3000/update-document", requestBody, {
+    await axios.put("https://instagram-clone-app-server.onrender.com/update-document", requestBody, {
       headers: { Authorization: `Bearer ${accessToken}` },
       params: { updateType },
     });

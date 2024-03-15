@@ -62,7 +62,7 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
       );
       await axios
         .put(
-          "http://localhost:3000/update-document",
+          "https://instagram-clone-app-server.onrender.com/update-document",
           { id: post.id },
           {
             params: { updateType: liked ? "removelikedpost" : "newlikedpost" },
@@ -134,7 +134,7 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
       })
     );
     await axios.put(
-      "http://localhost:3000/update-document",
+      "https://instagram-clone-app-server.onrender.com/update-document",
       { id: post.id },
       {
         headers: {

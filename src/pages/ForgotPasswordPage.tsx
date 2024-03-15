@@ -19,7 +19,7 @@ export async function action({ request }: { request: Request }) {
   let credentials = Object.fromEntries(formData.entries());
   try {
     await axios.post(
-      "http://localhost:3000/forgot-password",
+      "https://instagram-clone-app-server.onrender.com/forgot-password",
       credentials
     );
     return redirect("/");

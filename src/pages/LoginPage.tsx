@@ -7,6 +7,7 @@ import { useNavigate} from "react-router";
 import { json, redirect, useActionData } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { handleFirebaseAuthAPIError } from "../util/http";
 export type errorObj = { isError: boolean; message: string };
 
 function AuthPage() {
@@ -73,7 +74,8 @@ export async function action({ request }: { request: Request }) {
     localStorage.setItem("accessToken", response.data.accessToken)
     return redirect("/home")
   } catch (error: any) {
-    return json({ isError: true, message: error.response.data.errorMessage });
+    const message = handleFirebaseAuthAPIError(error.response.data.errorCode)
+    return json({ isError: true, message });
   }
 }
 

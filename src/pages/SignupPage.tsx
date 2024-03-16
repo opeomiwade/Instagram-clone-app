@@ -3,6 +3,7 @@ import Footer from "../components/Footer";
 import axios, { AxiosResponse } from "axios";
 import { useActionData, json, redirect } from "react-router";
 import { errorObj } from "./LoginPage";
+import { handleFirebaseAuthAPIError } from "../util/http";
 
 
 function SignupPage() {
@@ -26,8 +27,10 @@ export async function action({ request }: { request: Request }) {
     );
     localStorage.setItem("accessToken", response.data.accessToken);
     return redirect("/home");
-  } catch (error: any) {   
-    return json({ isError: true, message: error.response.data.errorMessage || error.response.data.message });
+  } catch (error: any) { 
+    console.log(error.response.data)
+    const message = handleFirebaseAuthAPIError(error.response.data.errorCode || error.response.data.message)
+    return json({ isError: true, message });
   }
 }
 

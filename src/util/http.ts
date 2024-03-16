@@ -64,4 +64,38 @@ export async function updateDoc(
   }
 }
 
+/**
+ * Returns a custom error message based on the Firebase Authentication error code.
+ * @param {string} firebaseAuthError - The Firebase Authentication error code.
+ * @returns {string} A custom error message corresponding to the provided error code.
+ */
+export function handleFirebaseAuthAPIError(firebaseAuthError: String){
+  let message;
+  switch(firebaseAuthError){
+    case "auth/invalid-credential":
+      message = "Your password or username is incorrect"
+      break;
+    case "auth/invalid-email":
+      message = "Account with this email does not exist"
+      break;
+    case "auth/email-already-in-use":
+      message = "Account with this email already exists"
+      break;
+    case "auth/too-many-requests":
+      message= "Please try again later you have made too many failed attempts"
+      break;
+    case "auth/user-not-found":
+      message = "There is no existing user record corresponding to the provided identifier."
+      break
+    case "auth/weak-password":
+      message="Weak password, should be at least 6 characters"
+      break;
+    default:
+      message = firebaseAuthError;
+      break;      
+  }
+  return message
+
+}
+
 export default queryClient;

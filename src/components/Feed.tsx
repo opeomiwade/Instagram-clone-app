@@ -27,7 +27,7 @@ function Feed() {
   return (
     <>
       <PostModal />
-      <div className={`flex flex-col mx-auto ${isLoading ? "justify-center" : "my-[90px]"}`}>
+      <div className={`flex flex-col mx-auto ${isLoading ? "justify-center items-center" : "my-[90px]"}`}>
         {isLoading ? (
           <CircularProgress />
         ) : posts.length > 0 ? (

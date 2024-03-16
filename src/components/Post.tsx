@@ -3,7 +3,7 @@ import CommentIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import BookmarkIcon from "@mui/icons-material/BookmarkOutlined";
 import MoreIcon from "@mui/icons-material/MoreHorizOutlined";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { motion } from "framer-motion";
 import { postDetails } from "../types/types";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +16,7 @@ import MoreDropDown from "./MoreDropdown";
 
 const Post: React.FC<{ post: postDetails }> = ({ post }) => {
   const dispatch = useDispatch();
+  const dialog = useRef<HTMLDialogElement>();
   const [comment, setNewComment] = useState<string>("");
   const [showEmojiPicker, setPicker] = useState<boolean>(false);
   const [showMoreDropDown, setShow] = useState<boolean>(false);
@@ -41,6 +42,11 @@ const Post: React.FC<{ post: postDetails }> = ({ post }) => {
 
   function emojiButtonHandler() {
     setPicker(!showEmojiPicker);
+  }
+
+  function closeModal() {
+    setShow(false);
+    dialog.current?.close();
   }
 
   function addCommentClickHandler() {
@@ -69,7 +75,7 @@ const Post: React.FC<{ post: postDetails }> = ({ post }) => {
         </span>
         <div className="relative" onClick={() => setShow(!showMoreDropDown)}>
           <MoreIcon className="hover:cursor-pointer" />
-          {showMoreDropDown && <MoreDropDown post={post} />}
+          {showMoreDropDown && <MoreDropDown post={post} close={closeModal}/>}
         </div>
       </div>
 

@@ -20,6 +20,7 @@ const Create = () => {
   const [imageFileUrl, setUrl] = useState<string>();
   const [caption, setCaption] = useState<string>("");
   const [sharing, setSharing] = useState<boolean>(false);
+  const [cancelIcon, setCancelClicked] = useState<boolean | undefined>()
   const open = useSelector(
     (state: { sidebar: { createModal: boolean } }) => state.sidebar.createModal
   );
@@ -62,7 +63,8 @@ const Create = () => {
     setCaption("");
     dispatch(sidebarActions.updateSidebarState("create"));
     fileInputRef.current!.value = "";
-    await axios
+    if(!cancelIcon){
+      await axios
       .put(
         "https://instagram-clone-app-server.onrender.com/update-document",
         userData.posts[userData.posts.length - 1],
@@ -75,6 +77,8 @@ const Create = () => {
       )
       .catch((error) => console.log(error));
     queryClient.invalidateQueries({ queryKey: ["all-posts"] });
+    }
+    
   }
 
   return createPortal(
@@ -87,6 +91,7 @@ const Create = () => {
       <button
         onClick={() => {
           dialogRef.current!.close();
+          setCancelClicked(true);
         }}
       >
         <CloseIcon

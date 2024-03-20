@@ -4,8 +4,8 @@ import { useSelector } from "react-redux";
 import uploadImage from "../util/uploadImage";
 import { useDispatch } from "react-redux";
 import { currentUserActions } from "../store/redux-store";
-import { updateDoc } from "../util/http";
-import axios from "axios";
+import { updateDoc, updateStreamChatProfilePic } from "../util/http";
+import { userDetails } from "../types/types";
 
 const ProfileImageModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   open,
@@ -40,13 +40,7 @@ const ProfileImageModal: React.FC<{ open: boolean; onClose: () => void }> = ({
       profilePic: url,
       username: userData.username,
     });
-    await axios
-      .post("http://localhost:3000/update-stream-user-data", {
-        id: userData.username,
-        name: userData.name,
-        image: userData.profilePic,
-      })
-      .catch((error) => console.log(error));
+    updateStreamChatProfilePic(userData as userDetails)
     inputRef.current!.value = "";
   }
 

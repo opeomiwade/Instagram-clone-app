@@ -1,16 +1,15 @@
 import axios from "axios";
 import { QueryClient } from "@tanstack/react-query";
-import { postDetails } from "../types/types";
+import { postDetails, userDetails } from "../types/types";
 
 const queryClient = new QueryClient();
 
 /**
- *
- * @returns
+ * method get all posts from backend
  */
 export async function getPosts() {
   try {
-    const response = await axios.get("http://localhost:3000/all-posts", {
+    const response = await axios.get("https://instagram-clone-app-server.onrender.com/all-posts", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -30,7 +29,7 @@ export async function getPosts() {
 export async function updatePost(updatedPost: postDetails) {
   try {
     const response = await axios.put(
-      "http://localhost:3000/update-document",
+      "https://instagram-clone-app-server.onrender.com/update-document",
       updatedPost,
       {
         headers: {
@@ -58,7 +57,7 @@ export async function updateDoc(
   updateType?: string
 ) {
   try {
-    await axios.put("http://localhost:3000/update-document", requestBody, {
+    await axios.put("https://instagram-clone-app-server.onrender.com/update-document", requestBody, {
       headers: { Authorization: `Bearer ${accessToken}` },
       params: { updateType },
     });
@@ -103,7 +102,16 @@ export function handleFirebaseAuthAPIError(firebaseAuthError: String) {
 
 /**
  * method to update stream chat user image
+ * @param {userDetails} userData  object containing user details
  */
-export async function updateStreamChatProfilePic(imageUrl: string) {}
+export async function updateStreamChatProfilePic(userData: userDetails) {
+  await axios
+    .post("https://instagram-clone-app-server.onrender.com/update-stream-user-data", {
+      id: userData.username,
+      name: userData.name,
+      image: userData.profilePic,
+    })
+    .catch((error) => console.log(error));
+}
 
 export default queryClient;

@@ -8,7 +8,6 @@ import {
 import { firebaseConfig } from "./uploadImage";
 import { initializeApp } from "firebase/app";
 import { userDetails } from "../types/types";
-import { StreamChat } from "stream-chat";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);

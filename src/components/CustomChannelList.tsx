@@ -5,7 +5,6 @@ import NewChatIcon from "./NewChatIcon";
 import NewMessageModal from "./NewMessageModal";
 import { useSelector } from "react-redux";
 import { userDetails } from "../types/types";
-import CircleIcon from "@mui/icons-material/Circle";
 
 const Chats: React.FC<ChannelListMessengerProps> = ({ loadedChannels }) => {
   const [open, setOpen] = useState<boolean>();

@@ -4,7 +4,6 @@ import InsertPhotoOutlinedIcon from "@mui/icons-material/InsertPhotoOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 import EmojiPicker from "emoji-picker-react";
-import axios from "axios";
 import classes from "../CSS/Modal.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { json } from "react-router";
@@ -65,18 +64,6 @@ const Create = () => {
     fileInputRef.current!.value = "";
     if (!cancelIcon) {
       updateDoc(localStorage.getItem("accessToken")!, userData.posts[userData.posts.length - 1], "post")
-      // await axios
-      //   .put(
-      //     "https://instagram-clone-app-server.onrender.com/update-document",
-      //     userData.posts[userData.posts.length - 1],
-      //     {
-      //       params: { updateType: "post" },
-      //       headers: {
-      //         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      //       },
-      //     }
-      //   )
-      //   .catch((error) => console.log(error));
       queryClient.invalidateQueries({ queryKey: ["all-posts"] });  // forces useQuery hook to refetch posts
     } 
   }

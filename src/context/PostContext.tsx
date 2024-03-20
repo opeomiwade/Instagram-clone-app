@@ -1,8 +1,8 @@
 import React, { ReactNode, createContext, useState } from "react";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { allPostsActions, currentUserActions } from "../store/redux-store";
 import { postDetails } from "../types/types";
+import { updateDoc } from "../util/http";
 
 const PostContext = createContext({
   likePostHandler: async (
@@ -21,7 +21,7 @@ const PostContext = createContext({
   setChanged: (_newValue: React.SetStateAction<boolean>) => {},
   deletePostHandler: (_postId: string) => {},
   archivePostHandler: (_post: postDetails) => {},
-  unArchivePostHandler : (_post: postDetails) => {}
+  unArchivePostHandler: (_post: postDetails) => {},
 });
 
 export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
@@ -60,18 +60,12 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
           type: "likedpost",
         })
       );
-      await axios
-        .put(
-          "https://instagram-clone-app-server.onrender.com/update-document",
-          { id: post.id },
-          {
-            params: { updateType: liked ? "removelikedpost" : "newlikedpost" },
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          }
-        )
-        .catch((error) => console.log(error));
+      let updateType = liked ? "removelikedpost" : "newlikedpost";
+      updateDoc(
+        localStorage.getItem("accessToken")!,
+        { id: post.id },
+        updateType
+      );
     }
   }
 
@@ -133,15 +127,11 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
         type: "savedpost",
       })
     );
-    await axios.put(
-      "https://instagram-clone-app-server.onrender.com/update-document",
+    let updateType = saved ? "removesavedpost" : "newsavedpost";
+    updateDoc(
+      localStorage.getItem("accessToken")!,
       { id: post.id },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-        params: { updateType: saved ? "removesavedpost" : "newsavedpost" },
-      }
+      updateType
     );
   }
 
@@ -153,7 +143,7 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
     setChanged,
     deletePostHandler,
     archivePostHandler,
-    unArchivePostHandler
+    unArchivePostHandler,
   };
 
   return <PostContext.Provider value={values}>{children}</PostContext.Provider>;

@@ -3,15 +3,13 @@ import classes from "../CSS/AuthPage.module.css";
 import Footer from "../components/Footer";
 import screenshot1 from "../assets/screenshot1-2x.png";
 import screenshot2 from "../assets/screenshot2-2x.png";
-import { useNavigate} from "react-router";
-import { json, redirect, useActionData } from "react-router-dom";
+import { json, redirect, useActionData, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { handleFirebaseAuthAPIError } from "../util/http";
 export type errorObj = { isError: boolean; message: string };
 
-function AuthPage() {
-  const navigate = useNavigate();
+function LoginPage() {
   const error: errorObj = useActionData() as errorObj;
   const [imageVisible, setIsVisisble] = useState<boolean>(true);
 
@@ -45,13 +43,13 @@ function AuthPage() {
           </div>
           <div className={`${classes.cardDiv} mt-[10px]`}>
             <p className="text-[12px]">
-              Dont have an account?
-              <a
+              {"Dont have an account?  "}
+              <Link
                 className="text-blue-500 text-[12px] font-bold hover:cursor-pointer"
-                onClick={() => navigate("/signup")}
+                to="/signup"
               >
                 Sign Up
-              </a>
+              </Link>
             </p>
           </div>
         </div>
@@ -61,28 +59,28 @@ function AuthPage() {
   );
 }
 
-export default AuthPage;
+export default LoginPage;
 
 export async function action({ request }: { request: Request }) {
   let formData = await request.formData();
   let credentials = Object.fromEntries(formData.entries());
   try {
     const response = await axios.post(
-      "https://instagram-clone-app-server.onrender.com/login",
+      "http://localhost:3000/login",
       credentials
     );
-    localStorage.setItem("accessToken", response.data.accessToken)
-    return redirect("/home")
+    localStorage.setItem("accessToken", response.data.accessToken);
+    localStorage.setItem("streamAccessToken", response.data.streamChatToken);
+    return redirect("/home");
   } catch (error: any) {
-    const message = handleFirebaseAuthAPIError(error.response.data.errorCode)
+    const message = handleFirebaseAuthAPIError(error.response.data.errorCode);
     return json({ isError: true, message });
   }
 }
 
-
-export function loader(){
-  if(localStorage.getItem("accessToken")){
-    localStorage.removeItem("accessToken")
+export function loader() {
+  if (localStorage.getItem("accessToken")) {
+    localStorage.removeItem("accessToken");
   }
-  return null
+  return null;
 }

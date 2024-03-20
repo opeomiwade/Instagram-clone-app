@@ -11,7 +11,7 @@ import { json } from "react-router";
 import { currentUserActions, sidebarActions } from "../store/redux-store";
 import handleFileChange from "../util/handleFileChange";
 import uploadImage from "../util/uploadImage";
-import queryClient from "../util/http";
+import queryClient, { updateDoc } from "../util/http";
 
 const Create = () => {
   const fileInputRef = useRef<HTMLInputElement>();
@@ -20,7 +20,7 @@ const Create = () => {
   const [imageFileUrl, setUrl] = useState<string>();
   const [caption, setCaption] = useState<string>("");
   const [sharing, setSharing] = useState<boolean>(false);
-  const [cancelIcon, setCancelClicked] = useState<boolean | undefined>()
+  const [cancelIcon, setCancelClicked] = useState<boolean | undefined>();
   const open = useSelector(
     (state: { sidebar: { createModal: boolean } }) => state.sidebar.createModal
   );
@@ -63,22 +63,22 @@ const Create = () => {
     setCaption("");
     dispatch(sidebarActions.updateSidebarState("create"));
     fileInputRef.current!.value = "";
-    if(!cancelIcon){
-      await axios
-      .put(
-        "https://instagram-clone-app-server.onrender.com/update-document",
-        userData.posts[userData.posts.length - 1],
-        {
-          params: { updateType: "post" },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      )
-      .catch((error) => console.log(error));
-    queryClient.invalidateQueries({ queryKey: ["all-posts"] });
-    }
-    
+    if (!cancelIcon) {
+      updateDoc(localStorage.getItem("accessToken")!, userData.posts[userData.posts.length - 1], "post")
+      // await axios
+      //   .put(
+      //     "http://localhost:3000/update-document",
+      //     userData.posts[userData.posts.length - 1],
+      //     {
+      //       params: { updateType: "post" },
+      //       headers: {
+      //         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      //       },
+      //     }
+      //   )
+      //   .catch((error) => console.log(error));
+      queryClient.invalidateQueries({ queryKey: ["all-posts"] });  // forces useQuery hook to refetch posts
+    } 
   }
 
   return createPortal(

@@ -3,29 +3,31 @@ import { createPortal } from "react-dom";
 import classes from "../CSS/Modal.module.css";
 import CloseIcon from "@mui/icons-material/Close";
 import queryClient from "../util/http";
-import { getAllUsers } from "../util/getUserDoc";
+import getUserDoc, { getAllUsers } from "../util/getUserDoc";
 import { userDetails } from "../types/types";
 import UserSearchResult from "./UserSearchResult";
 
 const NewMessageModal: React.FC<{
   open: boolean;
-  showModal: (value: boolean) => void;
-  chatClickHandler: (selectedUsers: string[]) => void;
-}> = ({ open, showModal, chatClickHandler }) => {
+  showNewMessageModal: (value: boolean) => void;
+  chatClickHandler: (selectedUsers: userDetails[]) => void;
+}> = ({ open, showNewMessageModal, chatClickHandler }) => {
   const dialogRef = useRef<HTMLDialogElement>();
   const inputRef = useRef<HTMLInputElement>();
   const [searchResults, setResults] = useState<userDetails[]>();
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-
+  const [selectedUsers, setSelectedUsers] = useState<userDetails[]>([]);
   const [disabled, setDisabled] = useState<boolean>(true);
 
   useEffect(() => {
     if (selectedUsers.length < 1) {
+      // disable chat button if no user was selcted for a chat
       setDisabled(true);
     }
   }, [selectedUsers]);
 
-  async function changeHandler(event: React.ChangeEvent<HTMLInputElement>) {
+  async function inputChangeHandler(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
     let users = await queryClient.fetchQuery({
       queryKey: ["all-users"],
       queryFn: getAllUsers,
@@ -46,13 +48,27 @@ const NewMessageModal: React.FC<{
     }
   }
 
-  function clickHandler(event: React.MouseEvent<HTMLDivElement>) {
+  async function searchResultClickHandler(
+    event: React.MouseEvent<HTMLDivElement>
+  ) {
     setDisabled(false);
-    const clickedUser = event.currentTarget?.id;
-    setSelectedUsers((prevState: string[]) => {
-      return [...prevState, clickedUser];
+    const clickedUser = await getUserDoc(event.currentTarget.id);
+    setSelectedUsers((prevState: userDetails[]) => {
+      return [...prevState, clickedUser as userDetails];
     });
     inputRef.current!.value = "";
+  }
+
+  function chatPartnerBubbleClickHandler(
+    event: React.MouseEvent<HTMLButtonElement>
+  ) {
+    const clickedUsername = event.currentTarget.id;
+    setSelectedUsers((state: userDetails[]) => {
+      return state.filter(
+        (selectedUser) => selectedUser.username != clickedUsername
+      );
+    });
+    setResults([]);
   }
 
   return createPortal(
@@ -72,7 +88,8 @@ const NewMessageModal: React.FC<{
           <button
             className="relative left-2 hover:cursor-pointer"
             onClick={() => {
-              dialogRef.current?.close(), showModal(false);
+              dialogRef.current?.close();
+              showNewMessageModal(false);
             }}
           >
             <CloseIcon style={{ fontSize: "2rem" }} />
@@ -83,23 +100,15 @@ const NewMessageModal: React.FC<{
           <h3 className="font-bold">To: </h3>
           {selectedUsers &&
             selectedUsers!.length > 0 &&
-            selectedUsers.map((username) => (
+            selectedUsers.map((selectedUser) => (
               <div
-                key={username}
+                key={selectedUser.username}
                 className="flex items-center bg-blue-50 text-blue-500 text-sm font-bold rounded-lg w-fit px-2 gap-2"
               >
-                {username}
+                {selectedUser.username}
                 <button
-                  id={username}
-                  onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                    const clickedUsername = event.currentTarget.id;
-                    setSelectedUsers((state: string[]) => {
-                      return state.filter(
-                        (username) => username != clickedUsername
-                      );
-                    });
-                    setResults([]);
-                  }}
+                  id={selectedUser.username}
+                  onClick={chatPartnerBubbleClickHandler}
                 >
                   <CloseIcon
                     style={{ fontSize: "1rem", fill: "(rgb(59 130 246)" }}
@@ -110,7 +119,7 @@ const NewMessageModal: React.FC<{
           <input
             className="w-full hover:cursor-text focus: outline-none"
             placeholder="Search..."
-            onChange={changeHandler}
+            onChange={inputChangeHandler}
             ref={inputRef as React.Ref<HTMLInputElement>}
           />
         </div>
@@ -122,7 +131,7 @@ const NewMessageModal: React.FC<{
                 name={user.name}
                 username={user.username}
                 profilePic={user.profilePic}
-                clickHandler={clickHandler}
+                clickHandler={searchResultClickHandler}
               />
             ))
           ) : (
@@ -137,7 +146,7 @@ const NewMessageModal: React.FC<{
           onClick={() => {
             chatClickHandler(selectedUsers);
             dialogRef.current?.close();
-            showModal(false);
+            showNewMessageModal(false);
           }}
         >
           Chat

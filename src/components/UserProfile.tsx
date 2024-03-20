@@ -43,6 +43,10 @@ const Profile: React.FC<{ userData: { [key: string]: any } }> = ({
     setView(true);
   }
 
+  function openImageModal(){
+    setModal(true)
+  }
+
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
@@ -91,7 +95,8 @@ const Profile: React.FC<{ userData: { [key: string]: any } }> = ({
           isCurrentUser={isCurrentUser}
           setTitle={setTitle}
           userData={userData}
-          openModal={openArchiveModal}
+          openProfileImageModal={openImageModal}
+          openArchiveModal={openArchiveModal}
         />
         <section
           className={`h-[60%] max-w-[80%] mx-auto ${

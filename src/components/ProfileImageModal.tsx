@@ -4,12 +4,13 @@ import { useSelector } from "react-redux";
 import uploadImage from "../util/uploadImage";
 import { useDispatch } from "react-redux";
 import { currentUserActions } from "../store/redux-store";
+import { updateDoc } from "../util/http";
 import axios from "axios";
 
-const ProfileImageModal: React.FC<{
-  open: boolean;
-  onClose: () => void;
-}> = ({ open, onClose }) => {
+const ProfileImageModal: React.FC<{ open: boolean; onClose: () => void }> = ({
+  open,
+  onClose,
+}) => {
   const dilaogRef = useRef<HTMLDialogElement>();
   const inputRef = useRef<HTMLInputElement>();
   const userData = useSelector(
@@ -35,35 +36,28 @@ const ProfileImageModal: React.FC<{
     dispatch(
       currentUserActions.updateUserData({ userData: { profilePic: url } })
     );
-    await axios.put(
-      "https://instagram-clone-app-server.onrender.com/update-document",
-      { profilePic: url, username: userData.username },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
+    updateDoc(localStorage.getItem("accessToken")!, {
+      profilePic: url,
+      username: userData.username,
+    });
+    await axios
+      .post("http://localhost:3000/update-stream-user-data", {
+        id: userData.username,
+        name: userData.name,
+        image: userData.profilePic,
+      })
+      .catch((error) => console.log(error));
     inputRef.current!.value = "";
   }
 
   async function removeCurrentPhoto() {
     dilaogRef.current?.close();
-
     dispatch(
       currentUserActions.updateUserData({
         userData: { profilePic: "" },
       })
     );
-    await axios.put(
-      "https://instagram-clone-app-server.onrender.com/update-document",
-      { profilePic: "" },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
+    updateDoc(localStorage.getItem("accessToken")!, { profilePic: "" });
   }
 
   return createPortal(

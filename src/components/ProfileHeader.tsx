@@ -1,5 +1,5 @@
 import image from "../assets/account circle.jpeg";
-import { useState, useRef, Ref } from "react";
+import { useRef, Ref } from "react";
 import { useDispatch } from "react-redux";
 import { sidebarActions, currentUserActions } from "../store/redux-store";
 import axios from "axios";
@@ -11,9 +11,9 @@ const Header: React.FC<HeaderProps> = ({
   isCurrentUser,
   setTitle,
   currentUser,
-  openModal,
+  openArchiveModal,
+  openProfileImageModal,
 }) => {
-  const [imageModal, setModal] = useState<boolean>(false);
   const followButtonRef = useRef<HTMLButtonElement>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,7 +21,8 @@ const Header: React.FC<HeaderProps> = ({
   async function logOutHandler() {
     dispatch(sidebarActions.updateSidebarState("home"));
     localStorage.removeItem("accessToken");
-    await axios.post("https://instagram-clone-app-server.onrender.com/sign-out");
+    localStorage.removeItem("streamAccessToken");
+    await axios.post("http://localhost:3000/sign-out");
     navigate("/");
   }
 
@@ -51,7 +52,9 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header className="flex  justify-center p-6 gap-[100px]">
       <img
-        onClick={() => setModal(!imageModal)}
+        onClick={() => {
+          openProfileImageModal();
+        }}
         src={userData.profilePic || image}
         className="rounded-full flex shrink max-w-[150px] max-h-[150px] hover:cursor-pointer"
       />
@@ -64,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({
             onClick={
               isCurrentUser
                 ? () => {
-                    openModal();
+                    openArchiveModal();
                   }
                 : followButtonHandler
             }

@@ -1,8 +1,8 @@
-import SideBar from "./SideBar";
+import SideBar from "../components/SideBar";
 import { Outlet } from "react-router";
 import CreateModal from "../components/Create";
 import { useSelector } from "react-redux";
-import Search from "./SearchSideBar";
+import Search from "../components/SearchSideBar";
 import { AnimatePresence } from "framer-motion";
 
 function Root() {

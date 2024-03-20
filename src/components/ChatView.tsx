@@ -1,62 +1,59 @@
-import React, { useState } from "react";
 import { userDetails } from "../types/types";
-import EmojiPicker from "emoji-picker-react";
-import EmojiSVG from "./EmojiSVG";
+import { StreamChat } from "stream-chat";
+import CustomMessageInput from "./MessageInput";
+import "../CSS/stream-chat-message.css";
+import {
+  Chat,
+  Channel,
+  ChannelList,
+  Thread,
+  Window,
+  MessageList,
+  MessageInput,
+} from "stream-chat-react";
+import ChannelHeader from "./ChannelHeader";
+import "stream-chat-react/dist/css/index.css";
+import "../CSS/stream-chat-message.css";
+import CustomChannelList from "./CustomChannelList";
+import emptyPlaceHolder from "./EmptyPlaceHolder";
+import CustomDateSeparator from "./CustomDateSeparator";
 
-const ChatView: React.FC<{ selectedUsers: userDetails[] }> = ({
-  selectedUsers,
-}) => {
-  const [openPicker, setOpen] = useState<boolean>();
-  const [inputText, setText] = useState<string>("");
-
-  function emojiClickHandler(emojiObj: { [key: string]: any }) {
-    setText((prevText) => prevText + " " + emojiObj.emoji);
-  }
+const ChatView: React.FC<{
+  chatClient: StreamChat;
+  userData: userDetails;
+}> = ({ chatClient, userData }) => {
+  const { username } = userData;
+  const filters = { members: { $in: [username] }, type: "messaging" };
+  const options = { presence: true, state: true };
 
   return (
     <div className="w-full">
-      <div className="flex gap-2 p-2 m-2 text-lg items-center">
-        <img
-          src={selectedUsers && selectedUsers[0].profilePic}
-          className="rounded-full w-[40px] h-[40px]"
+      <Chat client={chatClient} theme="">
+        <ChannelList
+          List={CustomChannelList}
+          sendChannelsToList
+          filters={filters}
+          options={options}
+          sort={{ last_message_at: -1 }}
+          setActiveChannelOnMount={false}
         />
-        <h2 className="font-bold">
-          {selectedUsers && selectedUsers[0].username}
-        </h2>
-      </div>
-      <hr />
-      <div className="h-[80%] w-full"></div>
-      <div className="flex z-20 border-[1px] border-gray-300 items-center p-2 w-[95%] mx-auto rounded-full gap-2 relative">
-        <button
-          className="hover:cursor-pointer"
-          onClick={() => setOpen(!openPicker)}
+        <Channel
+          Avatar={() => <></>}
+          DateSeparator={CustomDateSeparator}
+          Input={CustomMessageInput}
+          EmptyPlaceholder={emptyPlaceHolder}
         >
-          <EmojiSVG />
-        </button>
-        {openPicker && (
-          <div className="absolute bottom-[100%] min-h-[200px] min-w-[100px]">
-            <EmojiPicker
-              onEmojiClick={(emojiObj) => emojiClickHandler(emojiObj)}
+          <Window>
+            <ChannelHeader currentUser={userData.username} />
+            <MessageList
+              messageActions={["edit", "delete", "react", "reply"]}
+              hideDeletedMessages
             />
-          </div>
-        )}
-        <input
-          value={inputText}
-          className="focus: outline-none"
-          placeholder="Message..."
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            setText(event.target.value)
-          }
-        />
-        <button
-          className={`font-bold absolute right-4 ${
-            inputText.length < 1 ? "text-blue-300" : "text-blue-500"
-          }`}
-          disabled={inputText.length < 1}
-        >
-          Send
-        </button>
-      </div>
+            <MessageInput />
+          </Window>
+          <Thread />
+        </Channel>
+      </Chat>
     </div>
   );
 };

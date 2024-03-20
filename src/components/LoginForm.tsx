@@ -1,6 +1,6 @@
 import { Form } from "react-router-dom";
 import Input from "./Input";
-import { useNavigation } from "react-router-dom";
+import { useNavigation, Link } from "react-router-dom";
 import { useState, useRef } from "react";
 import { errorObj } from "../pages/LoginPage";
 
@@ -49,12 +49,12 @@ const AuthForm: React.FC<{ error: errorObj }> = ({ error }) => {
       >
         {navigation.state === "submitting" ? "Logging In...." : "Log In"}
       </button>
-      <a
-        href="/forgot-password"
-        className="text-blue-500 text-center w-fit mx-auto"
+      <Link
+        className="text-blue-500 text-center w-fit mx-auto text-sm"
+        to="/forgot-password"
       >
         Forgot Password?
-      </a>
+      </Link>
       {error && (
         <div className="text-[12px] text-red-700  bg-red-300 text-center rounded-md p-1">
           {error.message}

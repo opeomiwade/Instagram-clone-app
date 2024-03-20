@@ -15,6 +15,7 @@ import {
   createCipheriv,
   createDecipheriv,
 } from "crypto";
+import { StreamChat } from "stream-chat";
 
 /**
  * checks if document exists
@@ -182,3 +183,4 @@ export function decryptPassword(encryptedPassword, passwordGenerateKey) {
     console.log(error);
   }
 }
+

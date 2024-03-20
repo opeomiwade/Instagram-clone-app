@@ -18,6 +18,7 @@ import checkDocumentExists, {
   encryptPassword,
   decryptPassword,
 } from "./utils.js";
+import { StreamChat } from "stream-chat";
 
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
@@ -33,6 +34,12 @@ const firebaseApp = initializeApp(firebaseConfig);
 const port = 3000;
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
+const defaultImage =
+  "https://firebasestorage.googleapis.com/v0/b/instagram-clone-5b47d.appspot.com/o/account%20circle.jpeg?alt=media&token=ec3c29d8-5b89-447b-ac2e-651af9e4e394";
+const chatClient = new StreamChat(
+  process.env.STREAM_CHAT_API_KEY,
+  process.env.STREAM_CHAT_SECRET_KEY
+);
 
 function checkAuthorization(req, res, next) {
   if (!req.headers["authorization"]) {
@@ -75,6 +82,12 @@ app.get("/all-posts", checkAuthorization, async (req, res) => {
 
 app.post("/sign-out", async (req, res) => {
   await signOut(auth).catch((error) => console.log(error));
+  await chatClient
+    .disconnectUser()
+    .then(() => {
+      console.log("User disconnected");
+    })
+    .catch((error) => console.log(error));
   res.status(200).json("User logged out, session ended");
 });
 
@@ -86,7 +99,6 @@ app.post("/signup", async (req, res) => {
       .json({ message: "username is taken, please choose another" });
     return;
   }
-
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -95,6 +107,16 @@ app.post("/signup", async (req, res) => {
     );
     const user = userCredential.user;
     const encryptedPassword = await encryptPassword(password, username);
+
+    ////////////////////////////////////
+    //create streamchat user account
+    await chatClient.upsertUser({
+      id: username,
+      role: "user",
+      image: defaultImage,
+    });
+    //////////////////////////////////////
+
     await setDoc(doc(db, "users", username), {
       email,
       username,
@@ -106,6 +128,7 @@ app.post("/signup", async (req, res) => {
       likedPosts: [],
       savedPosts: [],
       archivedPosts: [],
+      profilePic: defaultImage,
     });
     res.status(201).json({
       message: "User created successfully",
@@ -121,6 +144,7 @@ app.post("/signup", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  const [{ username }] = await getUserData(email, db);
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -128,9 +152,16 @@ app.post("/login", async (req, res) => {
       password
     );
     const user = userCredential.user;
-    res
-      .status(200)
-      .json({ message: "User Logged In", accessToken: user.accessToken });
+    const {
+      users: [streamUser],
+    } = await chatClient.queryUsers({ id: username });
+    const streamChatToken = chatClient.createToken(username);
+    res.status(200).json({
+      message: "User Logged In",
+      accessToken: user.accessToken,
+      streamChatToken,
+      streamUser,
+    });
   } catch (error) {
     console.log(error);
     const errorCode = error.code;
@@ -185,6 +216,13 @@ app.post("/forgot-password", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+});
+
+app.post("/update-stream-user-data", async (req, res) => {
+  await chatClient
+    .upsertUser({ ...req.body })
+    .catch((error) => console.log(error));
+  res.status(200).json("updated");
 });
 
 app.listen(port);

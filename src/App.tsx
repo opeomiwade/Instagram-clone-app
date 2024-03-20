@@ -6,7 +6,7 @@ import { action as signupAction } from "./pages/SignupPage";
 import HomePage, { loader as checkAuth } from "./pages/Home";
 import { loader as removeAuth } from "./pages/LoginPage";
 import ProfilePage, { loader as profileLoader } from "./pages/ProfilePage";
-import Root from "./components/Root";
+import Root from "./layouts/Root";
 import ErrorPage from "./components/ErrorPage";
 import ForgotPasswordPage, {
   action as forgotpass,

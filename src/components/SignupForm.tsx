@@ -1,12 +1,11 @@
 import React, { useState, useRef } from "react";
-import { Form, useNavigate } from "react-router-dom";
+import { Form, Link } from "react-router-dom";
 import Input from "./Input";
 import classes from "../CSS/AuthPage.module.css";
 import { useNavigation } from "react-router-dom";
 import { errorObj } from "../pages/LoginPage";
 
 const SignupForm: React.FC<{ error: errorObj }> = ({ error }) => {
-  const navigate = useNavigate();
   const [disabled, setDisabled] = useState<boolean>(true);
   const emailRef = useRef<HTMLInputElement>();
   const passwordRef = useRef<HTMLInputElement>();
@@ -86,13 +85,13 @@ const SignupForm: React.FC<{ error: errorObj }> = ({ error }) => {
       </div>
       <div className={`${classes.cardDiv} mt-[10px]`}>
         <p className="text-[12px]">
-          Have an account?
-          <a
+          {"Have an account?  "}
+          <Link
             className="text-blue-500 text-[12px] font-bold hover:cursor-pointer"
-            onClick={() => navigate("/")}
+            to="/"
           >
             Log in
-          </a>
+          </Link>
         </p>
       </div>
     </div>

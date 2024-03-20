@@ -1,5 +1,5 @@
 import { ChannelListMessengerProps, useChatContext } from "stream-chat-react";
-import React, { Key, useEffect, useState } from "react";
+import React, { Key, useState } from "react";
 import { motion } from "framer-motion";
 import NewChatIcon from "./NewChatIcon";
 import NewMessageModal from "./NewMessageModal";
@@ -19,9 +19,6 @@ const Chats: React.FC<ChannelListMessengerProps> = ({ loadedChannels }) => {
   function showModal(value: boolean) {
     setOpen(value);
   }
-  useEffect(() => {
-
-  })
 
   async function chatClickHandler(selectedUsers: userDetails[]) {
     try {

@@ -6,6 +6,8 @@ import queryClient from "../util/http";
 import getUserDoc, { getAllUsers } from "../util/getUserDoc";
 import { userDetails } from "../types/types";
 import UserSearchResult from "./UserSearchResult";
+import { useSelector } from "react-redux";
+import { AnimatePresence, motion } from "framer-motion";
 
 const NewMessageModal: React.FC<{
   open: boolean;
@@ -17,6 +19,11 @@ const NewMessageModal: React.FC<{
   const [searchResults, setResults] = useState<userDetails[]>();
   const [selectedUsers, setSelectedUsers] = useState<userDetails[]>([]);
   const [disabled, setDisabled] = useState<boolean>(true);
+  const [showErrorDiv, setShow] = useState<boolean>();
+  const userData = useSelector(
+    (state: { currentUser: { userData: { [key: string]: any } } }) =>
+      state.currentUser.userData
+  );
 
   useEffect(() => {
     if (selectedUsers.length < 1) {
@@ -51,12 +58,17 @@ const NewMessageModal: React.FC<{
   async function searchResultClickHandler(
     event: React.MouseEvent<HTMLDivElement>
   ) {
-    setDisabled(false);
-    const clickedUser = await getUserDoc(event.currentTarget.id);
-    setSelectedUsers((prevState: userDetails[]) => {
-      return [...prevState, clickedUser as userDetails];
-    });
-    inputRef.current!.value = "";
+    if (event.currentTarget?.id !== userData.username) {
+      setShow(false);
+      setDisabled(false);
+      const clickedUser = await getUserDoc(event.currentTarget.id);
+      setSelectedUsers((prevState: userDetails[]) => {
+        return [...prevState, clickedUser as userDetails];
+      });
+      inputRef.current!.value = "";
+    } else {
+      setShow(true);
+    }
   }
 
   function chatPartnerBubbleClickHandler(
@@ -122,6 +134,19 @@ const NewMessageModal: React.FC<{
             onChange={inputChangeHandler}
             ref={inputRef as React.Ref<HTMLInputElement>}
           />
+          <AnimatePresence>
+            {inputRef.current && inputRef.current!.value.length < 1 ||
+              (showErrorDiv && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  exit={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mx-auto text-red-500 bg-red-200 text-xs p-2 rounded-md w-[600px]"
+                >
+                  Cant chat with yourself, pick someone else
+                </motion.div>
+              ))}
+          </AnimatePresence>
         </div>
         <div className="h-[60%] w-full overflow-y-auto">
           {searchResults && searchResults.length > 0 ? (

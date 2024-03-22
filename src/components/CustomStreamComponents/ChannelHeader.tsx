@@ -12,7 +12,8 @@ const ChannelHeader: React.FC<{ currentUser: string }> = ({ currentUser }) => {
     );
     setChannelImage(chatPartner.user?.image)
     setPartner(chatPartner);
-  }, []);
+  }, [channel]);
+  
   return (
     <>
       <div className="flex gap-2 p-2 m-2 text-lg items-center bg-white">

@@ -1,6 +1,6 @@
 import { userDetails } from "../types/types";
 import { StreamChat } from "stream-chat";
-import CustomMessageInput from "./MessageInput";
+import CustomMessageInput from "./CustomStreamComponents/MessageInput";
 import "../CSS/stream-chat-message.css";
 import {
   Chat,
@@ -11,12 +11,13 @@ import {
   MessageList,
   MessageInput,
 } from "stream-chat-react";
-import ChannelHeader from "./ChannelHeader";
+import ChannelHeader from "./CustomStreamComponents/ChannelHeader";
 import "stream-chat-react/dist/css/index.css";
 import "../CSS/stream-chat-message.css";
-import CustomChannelList from "./CustomChannelList";
+import CustomChannelList from "./CustomStreamComponents/CustomChannelList";
 import emptyPlaceHolder from "./EmptyPlaceHolder";
 import CustomDateSeparator from "./CustomDateSeparator";
+import CustomChannelPreview from "./CustomStreamComponents/CustomChannelPreview";
 
 const ChatView: React.FC<{
   chatClient: StreamChat;
@@ -31,7 +32,8 @@ const ChatView: React.FC<{
       <Chat client={chatClient} theme="">
         <ChannelList
           List={CustomChannelList}
-          sendChannelsToList
+          Preview={CustomChannelPreview}
+          EmptyStateIndicator={() => <></>}
           filters={filters}
           options={options}
           sort={{ last_message_at: -1 }}
@@ -46,7 +48,7 @@ const ChatView: React.FC<{
           <Window>
             <ChannelHeader currentUser={userData.username} />
             <MessageList
-              messageActions={["edit", "delete", "react", "reply"]}
+              messageActions={["edit", "delete", "react"]}
               hideDeletedMessages
             />
             <MessageInput />

@@ -1,7 +1,7 @@
 import {
   useMessageInputContext,
 } from "stream-chat-react";
-import EmojiSVG from "./EmojiSVG";
+import EmojiSVG from "../EmojiSVG";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { useState } from "react";
 
@@ -49,6 +49,7 @@ const MessageInput = () => {
         }`}
         type="submit"
         disabled={text.length < 1}
+        onClick={() => setOpen(false)}
       >
         Send
       </button>

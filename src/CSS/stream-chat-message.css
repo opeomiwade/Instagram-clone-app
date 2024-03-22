@@ -14,9 +14,10 @@
 .str-chat__message-text-inner,
 .str-chat__message-simple-text-inner {
   background: #efefef !important;
-  border-radius: 20px !important;
+  border-radius: 30px !important;
   margin-left: 10px !important;
   border: none;
+  padding: 5px !important;
 }
 
 .str-chat__message-data, .str-chat__message-simple-data{

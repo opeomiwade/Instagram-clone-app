@@ -15,8 +15,8 @@ import ChannelHeader from "./CustomStreamComponents/ChannelHeader";
 import "stream-chat-react/dist/css/index.css";
 import "../CSS/stream-chat-message.css";
 import CustomChannelList from "./CustomStreamComponents/CustomChannelList";
-import emptyPlaceHolder from "./EmptyPlaceHolder";
-import CustomDateSeparator from "./CustomDateSeparator";
+import emptyPlaceHolder from "./CustomStreamComponents/EmptyPlaceHolder";
+import CustomDateSeparator from "./CustomStreamComponents/CustomDateSeparator";
 import CustomChannelPreview from "./CustomStreamComponents/CustomChannelPreview";
 
 const ChatView: React.FC<{
@@ -48,10 +48,11 @@ const ChatView: React.FC<{
           <Window>
             <ChannelHeader currentUser={userData.username} />
             <MessageList
-              messageActions={["edit", "delete", "react"]}
+              closeReactionSelectorOnClick={true}
+              messageActions={["delete", "quote", "react"]}
               hideDeletedMessages
             />
-            <MessageInput />
+            <MessageInput noFiles />
           </Window>
           <Thread />
         </Channel>

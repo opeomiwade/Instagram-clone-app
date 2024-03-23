@@ -23,3 +23,7 @@
 .str-chat__message-data, .str-chat__message-simple-data{
   margin-left: 10px;
 }
+
+.str-chat__list{
+  padding: 0px 10px !important;
+}

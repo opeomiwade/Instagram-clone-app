@@ -42,7 +42,7 @@ const ChatView: React.FC<{
         <Channel
           Avatar={() => <></>}
           DateSeparator={CustomDateSeparator}
-          Input={CustomMessageInput}
+          // Input={CustomMessageInput}
           EmptyPlaceholder={emptyPlaceHolder}
         >
           <Window>
@@ -52,7 +52,7 @@ const ChatView: React.FC<{
               messageActions={["delete", "quote", "react"]}
               hideDeletedMessages
             />
-            <MessageInput noFiles />
+            <MessageInput noFiles Input={CustomMessageInput} />
           </Window>
           <Thread />
         </Channel>

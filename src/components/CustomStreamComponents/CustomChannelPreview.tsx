@@ -21,9 +21,6 @@ const CustomChannelPreview: React.FC<ChannelPreviewUIComponentProps> = ({
   const [partner] = Object.values(channel.state.members).filter(
     (member) => member.user_id != currentUser
   );
-  useEffect(() => {
-    console.log(latestMessage)
-  })
 
   return (
     <button

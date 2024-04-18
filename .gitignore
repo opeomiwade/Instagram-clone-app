@@ -33,5 +33,6 @@ firestore.rules
 storage.rules
 .firebaserc
 /.firebase
+/.vite
 
 

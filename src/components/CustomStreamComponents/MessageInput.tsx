@@ -6,10 +6,9 @@ import {
 } from "stream-chat-react";
 import EmojiSVG from "../EmojiSVG";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import ImageIcon from "@mui/icons-material/Image";
 import CancelIcon from "@mui/icons-material/Cancel";
-import handleFileChange from "../../util/handleFileChange";
 
 const MessageInput: React.FC = () => {
   const [openPicker, setOpen] = useState<boolean>();

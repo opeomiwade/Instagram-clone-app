@@ -7,7 +7,7 @@ import PostModal from "./PostModal";
 import TabContent from "./ProfileTabContent";
 import { postDetails, userDetails } from "../types/types";
 import { updateDoc } from "../util/http";
-import ListModal from "../components/FollowingFollowerModal";
+import FollowListModal from "../components/FollowingFollowerModal";
 import ProfileHeader from "./ProfileHeader";
 import ArchivePostsModal from "./ArchivePostsModal";
 
@@ -29,9 +29,10 @@ const Profile: React.FC<{ userData: { [key: string]: any } }> = ({
       state.currentUser.userData
   );
   let isCurrentUser = currentUser.username === userData.username;
+  // if userprofile is that of the current user then userData is set to currentUser
   isCurrentUser ? (userData = currentUser) : userData;
 
-  function closeListModal() {
+  function closeFollowListModal() {
     setTitle("");
   }
 
@@ -43,8 +44,8 @@ const Profile: React.FC<{ userData: { [key: string]: any } }> = ({
     setView(true);
   }
 
-  function openImageModal(){
-    setModal(true)
+  function openImageModal() {
+    setModal(true);
   }
 
   useEffect(() => {
@@ -58,6 +59,7 @@ const Profile: React.FC<{ userData: { [key: string]: any } }> = ({
       }
     });
     resizeObserver.observe(document.documentElement);
+
     if (Object.keys(currentUser).length > 0) {
       updateDoc(localStorage.getItem("accessToken") as string, currentUser);
     }
@@ -74,7 +76,7 @@ const Profile: React.FC<{ userData: { [key: string]: any } }> = ({
   function selectedTypeHandler(tabName: string) {
     setType(tabName);
   }
-
+  
   return (
     <>
       <ProfileImageModal
@@ -83,9 +85,9 @@ const Profile: React.FC<{ userData: { [key: string]: any } }> = ({
       />
       {viewArchive && <ArchivePostsModal closeModal={closeArchiveModal} />}
       <PostModal isCurrentUser={isCurrentUser} />
-      <ListModal
+      <FollowListModal
         title={title}
-        closeModal={closeListModal}
+        closeModal={closeFollowListModal}
         userInfo={userData as userDetails}
         isCurrentUser={isCurrentUser}
       />

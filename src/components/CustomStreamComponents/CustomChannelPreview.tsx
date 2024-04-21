@@ -1,4 +1,4 @@
-import { Key, useEffect } from "react";
+import { Key } from "react";
 import {
   ChannelPreviewUIComponentProps,
   useChatContext,

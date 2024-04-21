@@ -122,8 +122,11 @@ const currentUserSlice = createSlice({
           );
           break;
         case "archive-action":
+          //check if at least one element in the array satisfies a condition specified by the provided function.
           if (
-            state.userData.archivedPosts.some((post:postDetails) => post.id === action.payload.post.id)
+            state.userData.archivedPosts.some(
+              (post: postDetails) => post.id === action.payload.post.id
+            )
           ) {
             state.userData.archivedPosts = state.userData.archivedPosts.filter(
               (post: postDetails) => post.id !== action.payload.post.id
@@ -179,6 +182,10 @@ const allPosts = createSlice({
         }
       });
       state.posts = posts;
+    },
+
+    deletePost(state, action) {
+      state.posts = state.posts.filter((post) => post.id !== action.payload.id);
     },
   },
 });

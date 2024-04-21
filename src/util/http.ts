@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { CancelTokenSource } from "axios";
 import { QueryClient } from "@tanstack/react-query";
 import { postDetails, userDetails } from "../types/types";
 
@@ -9,7 +9,7 @@ const queryClient = new QueryClient();
  */
 export async function getPosts() {
   try {
-    const response = await axios.get("https://instagram-clone-app-server.onrender.com/all-posts", {
+    const response = await axios.get("http://localhost:3000/all-posts", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -29,7 +29,7 @@ export async function getPosts() {
 export async function updatePost(updatedPost: postDetails) {
   try {
     const response = await axios.put(
-      "https://instagram-clone-app-server.onrender.com/update-document",
+      "http://localhost:3000/update-document",
       updatedPost,
       {
         headers: {
@@ -51,19 +51,29 @@ export async function updatePost(updatedPost: postDetails) {
  * @param {Object} requestBody - data passed to the backend
  * @param {string} updateType - Optional. Specifies the type of update.
  */
-export async function updateDoc(
+export function updateDoc(
   accessToken: string,
   requestBody: any,
-  updateType?: string
+  updateType?: string,
+  cancelToken?: CancelTokenSource
 ) {
-  try {
-    await axios.put("https://instagram-clone-app-server.onrender.com/update-document", requestBody, {
+  // Cancel the previous request if it exists
+  if (cancelToken) {
+    cancelToken.cancel("Request canceled by updateDoc method");
+  }
+
+  // Create a new CancelTokenSource for this request
+  const newCancelToken = axios.CancelToken.source();
+
+  axios
+    .put("http://localhost:3000/update-document", requestBody, {
       headers: { Authorization: `Bearer ${accessToken}` },
       params: { updateType },
-    });
-  } catch (error) {
-    console.log(error);
-  }
+      cancelToken: newCancelToken.token,
+    })
+    .then(() => {})
+    .catch((error) => console.log(error));
+  return newCancelToken;
 }
 
 /**
@@ -106,11 +116,22 @@ export function handleFirebaseAuthAPIError(firebaseAuthError: String) {
  */
 export async function updateStreamChatProfilePic(userData: userDetails) {
   await axios
-    .post("https://instagram-clone-app-server.onrender.com/update-stream-user-data", {
+    .post("http://localhost:3000/update-stream-user-data", {
       id: userData.username,
       name: userData.name,
       image: userData.profilePic,
     })
+    .catch((error) => console.log(error));
+}
+
+export function sharePost(post: postDetails, members: string[], message?: string) {
+  axios
+    .post("http://localhost:3000/send-post", {
+      members,
+      post,
+      message,
+    })
+    .then(() => {})
     .catch((error) => console.log(error));
 }
 

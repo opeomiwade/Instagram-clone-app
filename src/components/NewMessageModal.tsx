@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import { createPortal } from "react-dom";
 import classes from "../CSS/Modal.module.css";
 import CloseIcon from "@mui/icons-material/Close";
@@ -8,12 +8,16 @@ import { userDetails } from "../types/types";
 import UserSearchResult from "./UserSearchResult";
 import { useSelector } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
+import { postDetails } from "../types/types";
+import { sharePost } from "../util/http";
+import PostContext from "../context/PostContext";
 
 const NewMessageModal: React.FC<{
   open: boolean;
+  modalTitle?: string;
   showNewMessageModal: (value: boolean) => void;
-  chatClickHandler: (selectedUsers: userDetails[]) => void;
-}> = ({ open, showNewMessageModal, chatClickHandler }) => {
+  chatClickHandler?: (selectedUsers: userDetails[]) => void;
+}> = ({ open, showNewMessageModal, chatClickHandler, modalTitle }) => {
   const dialogRef = useRef<HTMLDialogElement>();
   const inputRef = useRef<HTMLInputElement>();
   const [searchResults, setResults] = useState<userDetails[]>();
@@ -24,6 +28,9 @@ const NewMessageModal: React.FC<{
     (state: { currentUser: { userData: { [key: string]: any } } }) =>
       state.currentUser.userData
   );
+  const { postToShare, setPostToShare } = useContext(PostContext);
+
+  const messageInputRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
     if (selectedUsers.length < 1) {
@@ -61,9 +68,21 @@ const NewMessageModal: React.FC<{
     if (event.currentTarget?.id !== userData.username) {
       setShow(false);
       setDisabled(false);
-      const clickedUser = await getUserDoc(event.currentTarget.id);
+      const clickedUser = (await getUserDoc(
+        event.currentTarget.id
+      )) as userDetails;
       setSelectedUsers((prevState: userDetails[]) => {
-        return [...prevState, clickedUser as userDetails];
+        // checks if array contains object
+        if (
+          selectedUsers.some(
+            (selectedUser) => selectedUser.username == clickedUser.username
+          )
+        ) {
+          return selectedUsers.filter(
+            (selectedUser) => selectedUser.username != clickedUser.username
+          );
+        }
+        return [...prevState, clickedUser];
       });
       inputRef.current!.value = "";
     } else {
@@ -86,17 +105,20 @@ const NewMessageModal: React.FC<{
   return createPortal(
     <dialog
       open={open}
-      className={`${classes.modal} ${open && "flex"}`}
+      className={`${classes.modal} ${open && "flex"} !z-50`}
       ref={dialogRef as React.Ref<HTMLDialogElement>}
       onClose={() => {
+        messageInputRef.current!.value = "";
         inputRef.current!.value = "";
         setResults([]);
         setSelectedUsers([]);
       }}
     >
-      <div className="bg-white rounded-md h-[500px] w-[600px]">
+      <div className="relative bg-white rounded-md h-[500px] w-[600px]">
         <div className="flex m-4 items-center justify-end gap-52">
-          <h2 className="font-bold w-fit">New Message</h2>
+          <h2 className="font-bold w-fit">
+            {modalTitle ? modalTitle : "New Message"}
+          </h2>
           <button
             className="relative left-2 hover:cursor-pointer"
             onClick={() => {
@@ -135,7 +157,7 @@ const NewMessageModal: React.FC<{
             ref={inputRef as React.Ref<HTMLInputElement>}
           />
           <AnimatePresence>
-            {inputRef.current && inputRef.current!.value.length < 1 ||
+            {(inputRef.current && inputRef.current!.value.length < 1) ||
               (showErrorDiv && (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -148,7 +170,7 @@ const NewMessageModal: React.FC<{
               ))}
           </AnimatePresence>
         </div>
-        <div className="h-[60%] w-full overflow-y-auto">
+        <div className="h-auto w-full overflow-y-auto">
           {searchResults && searchResults.length > 0 ? (
             searchResults?.map((user) => (
               <UserSearchResult
@@ -163,19 +185,48 @@ const NewMessageModal: React.FC<{
             <p className="text-gray-500 text-sm p-2">No accounts found.</p>
           )}
         </div>
-        <button
-          className={`w-[90%] ml-8 rounded-lg  p-2 text-sm text-white font-semibold hover:cursor-pointer ${
-            disabled ? "bg-blue-300" : "bg-blue-500"
-          }`}
-          disabled={disabled}
-          onClick={() => {
-            chatClickHandler(selectedUsers);
-            dialogRef.current?.close();
-            showNewMessageModal(false);
-          }}
-        >
-          Chat
-        </button>
+        <div className="absolute bottom-4 w-full flex justify-center flex-col">
+          <AnimatePresence>
+            {selectedUsers.length > 0 && (
+              <motion.div
+                initial={{ y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="my-2"
+              >
+                <hr />
+                <input
+                  ref={messageInputRef as React.Ref<HTMLInputElement>}
+                  placeholder="Write a Message.... "
+                  className="mx-4 p-2 text-left rounded-lg focus:outline-none w-[80%]"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <button
+            className={`mx-4 rounded-lg p-2 text-sm text-white font-semibold bg-blue-500 hover:bg-blue-600`}
+            disabled={disabled}
+            onClick={() => {
+              if (modalTitle === "Share") {
+                sharePost(
+                  postToShare as postDetails,
+                  [selectedUsers[0].username, userData.username],
+                  messageInputRef.current?.value
+                );
+                setPostToShare({} as postDetails);
+                showNewMessageModal(false);
+              } else {
+                chatClickHandler && chatClickHandler(selectedUsers);
+                dialogRef.current?.close();
+                showNewMessageModal(false);
+              }
+            }}
+          >
+            {modalTitle ? "Send" : "Chat"}
+          </button>
+        </div>
       </div>
     </dialog>,
     document.getElementById("modal")!

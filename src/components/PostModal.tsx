@@ -18,9 +18,10 @@ import Comment from "./Comment";
 import { updatePost } from "../util/http";
 import MoreDropDown from "./MoreDropdown";
 
-const PostDialog: React.FC<{ isCurrentUser?: boolean }> = ({
-  isCurrentUser,
-}) => {
+const PostDialog: React.FC<{
+  isCurrentUser?: boolean;
+  showNewMessageModal?: (value: boolean) => void;
+}> = ({ isCurrentUser, showNewMessageModal }) => {
   const dialog = useRef<HTMLDialogElement>();
   const [showEmojiPicker, setPicker] = useState<boolean>(false);
   const [comment, setNewComment] = useState<string>("");
@@ -85,8 +86,13 @@ const PostDialog: React.FC<{ isCurrentUser?: boolean }> = ({
       ref={dialog as React.Ref<HTMLDialogElement>}
       onClose={() => {
         dispatch(currentPostActions.setCurrentPost({}));
-        if (sidebarState === "profile") {
-          // only perform this action when the user open the modal in the userprofile page
+        if (
+          sidebarState === "profile" &&
+          userData.posts &&
+          userData.posts.length > 0
+        ) {
+          // only perform this action when the user open and then closes the modal in the userprofile page
+          // makes updates to the post the user opened in the profile page.
           updatePost(post);
         }
       }}
@@ -136,19 +142,21 @@ const PostDialog: React.FC<{ isCurrentUser?: boolean }> = ({
           </div>
           <hr />
           <div className=" h-[65%] p-2 overflow-auto flex flex-col">
-            <div className="w-full flex items-center gap-[20px]">
-              <div className="rounded-full border-2 border-amber-500 p-[2px]">
-                <img
-                  src={post.profilePic}
-                  className="rounded-full w-[30px] h-[30px]"
-                />
-              </div>
+            {post.caption && post.caption.trim().length > 0 && (
+              <div className="w-full flex items-center gap-[20px]">
+                <div className="rounded-full border-2 border-amber-500 p-[2px]">
+                  <img
+                    src={post.profilePic}
+                    className="rounded-full w-[30px] h-[30px]"
+                  />
+                </div>
 
-              <h3 className="font-bold">
-                {`${post.username} `}
-                <span className="font-normal">{post.caption}</span>
-              </h3>
-            </div>
+                <h3 className="font-bold">
+                  {`${post.username} `}
+                  <span className="font-normal">{post.caption}</span>
+                </h3>
+              </div>
+            )}
             {post.comments &&
               post.comments.length > 0 &&
               post.comments.map((comment) => {
@@ -194,7 +202,13 @@ const PostDialog: React.FC<{ isCurrentUser?: boolean }> = ({
               <button className="hover:cursor-pointer ">
                 <CommentIcon />
               </button>
-              <button className="hover:cursor-pointer">
+              <button
+                className="hover:cursor-pointer"
+                onClick={() => {
+                  showNewMessageModal && showNewMessageModal(true);
+                  ctx.setPostToShare(post);
+                }}
+              >
                 <SendOutlinedIcon />
               </button>
             </div>

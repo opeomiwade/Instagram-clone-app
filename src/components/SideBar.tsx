@@ -198,7 +198,7 @@ const SideBar = () => {
             dispatch(recentsActions.clear())
             localStorage.removeItem("accessToken");
             localStorage.removeItem("streamAccessToken")
-            await axios.post("https://instagram-clone-app-server.onrender.com/sign-out");
+            await axios.post("http://localhost:3000/sign-out");
             navigate("/");
           }}
         >

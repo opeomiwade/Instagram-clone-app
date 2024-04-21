@@ -22,12 +22,17 @@ const PostContext = createContext({
   deletePostHandler: (_postId: string) => {},
   archivePostHandler: (_post: postDetails) => {},
   unArchivePostHandler: (_post: postDetails) => {},
+  setPostToShare: (_newValue: React.SetStateAction<postDetails>) => {},
+  postToShare: {},
 });
 
 export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [postChanged, setChanged] = useState<boolean>(false);
+  const [postToShare, setPostToShare] = useState<postDetails>(
+    {} as postDetails
+  );
   const dispatch = useDispatch();
   const userData = useSelector(
     (state: { currentUser: { userData: { [key: string]: any } } }) =>
@@ -95,6 +100,7 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
     dispatch(
       currentUserActions.updateUserData({ postId: postId, type: "deletepost" })
     );
+    dispatch(allPostsActions.deletePost({ id: postId }));
   }
 
   function archivePostHandler(post: postDetails) {
@@ -144,6 +150,8 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
     deletePostHandler,
     archivePostHandler,
     unArchivePostHandler,
+    postToShare,
+    setPostToShare,
   };
 
   return <PostContext.Provider value={values}>{children}</PostContext.Provider>;

@@ -14,7 +14,10 @@ import PostContext from "../context/PostContext";
 import image from "../assets/account circle.jpeg";
 import MoreDropDown from "./MoreDropdown";
 
-const Post: React.FC<{ post: postDetails }> = ({ post }) => {
+const Post: React.FC<{
+  post: postDetails;
+  showNewMessageModal?: (value: boolean) => void;
+}> = ({ post, showNewMessageModal }) => {
   const dispatch = useDispatch();
   const dialog = useRef<HTMLDialogElement>();
   const [comment, setNewComment] = useState<string>("");
@@ -26,6 +29,7 @@ const Post: React.FC<{ post: postDetails }> = ({ post }) => {
     postChanged,
     setChanged,
     addCommentHandler,
+    setPostToShare,
   } = useContext(PostContext);
 
   const userData = useSelector(
@@ -75,7 +79,7 @@ const Post: React.FC<{ post: postDetails }> = ({ post }) => {
         </span>
         <div className="relative" onClick={() => setShow(!showMoreDropDown)}>
           <MoreIcon className="hover:cursor-pointer" />
-          {showMoreDropDown && <MoreDropDown post={post} close={closeModal}/>}
+          {showMoreDropDown && <MoreDropDown post={post} close={closeModal} />}
         </div>
       </div>
 
@@ -112,7 +116,14 @@ const Post: React.FC<{ post: postDetails }> = ({ post }) => {
           >
             <CommentIcon />
           </button>
-          <button id="send" className="hover:cursor-pointer">
+          <button
+            id="send"
+            className="hover:cursor-pointer"
+            onClick={() => {
+              showNewMessageModal && showNewMessageModal(true);
+              setPostToShare(post);
+            }}
+          >
             <SendOutlinedIcon />
           </button>
         </div>

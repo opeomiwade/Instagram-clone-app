@@ -16,7 +16,7 @@ function ProfilePage() {
   useEffect(() => {
     dispatch(sidebarActions.updateSidebarState("profile"));
     dispatch(currentUserActions.setCurrentUser({ userData: currentUserData }));
-  });
+  }, []);
   return (
     <PostContextProvider>
       <UserProfile userData={userData as {}} />
@@ -31,7 +31,8 @@ export async function loader({ request }: { request: Request }) {
   const userData = await getUserDoc(username);
   let response;
   try {
-    response = await axios.get("https://instagram-clone-app-server.onrender.com/user-data", {
+    // get details of currently logged in user
+    response = await axios.get("http://localhost:3000/user-data", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

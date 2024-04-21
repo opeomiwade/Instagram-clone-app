@@ -19,6 +19,7 @@ import checkDocumentExists, {
   decryptPassword,
 } from "./utils.js";
 import { StreamChat } from "stream-chat";
+import fs from "fs";
 
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
@@ -223,6 +224,30 @@ app.post("/update-stream-user-data", async (req, res) => {
     .upsertUser({ ...req.body })
     .catch((error) => console.log(error));
   res.status(200).json("updated");
+});
+
+app.post("/send-post", async (req, res) => {
+  const { members, post, message } = req.body;
+  try {
+    const [channel] = await chatClient.queryChannels({
+      members: [...members],
+    });
+    await channel.sendMessage({
+      text: message.trim().length > 0 ? message : "",
+      attachments: [
+        {
+          type: "image",
+          thumb_url: post.imageUrl,
+          asset_url: post.imageUrl,
+        },
+      ],
+      user_id: members[1],
+    });
+    res.status(200).json("post sent");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
 });
 
 app.listen(port);

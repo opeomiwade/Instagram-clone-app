@@ -60,7 +60,6 @@ const DropdownMenu: React.FC<{
             ctx.archivePostHandler(post)
           }
           close();
-          console.log(userData.archivedPosts);
         }}
       >
         <ArchiveIcon />

@@ -1,13 +1,14 @@
 import Post from "./Post";
 import PostModal from "./PostModal";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { postDetails } from "../types/types";
 import { useQuery } from "@tanstack/react-query";
-import queryClient, { getPosts } from "../util/http";
+import queryClient, { getPosts, updateDoc } from "../util/http";
 import { useSelector, useDispatch } from "react-redux";
 import { allPostsActions } from "../store/redux-store";
 import { CircularProgress } from "@mui/material";
 import { motion } from "framer-motion";
+import NewMessageModal from "./NewMessageModal";
 
 function Feed() {
   const { data, isSuccess, isFetching, isStale } = useQuery({
@@ -20,17 +21,37 @@ function Feed() {
     (state: { allPosts: { posts: postDetails[] } }) => state.allPosts.posts
   );
 
+  const currentUser = useSelector(
+    (state: { currentUser: { userData: { [key: string]: any } } }) =>
+      state.currentUser.userData
+  );
+  const [open, setOpenNewMessageModal] = useState<boolean>();
+
   useEffect(() => {
     if (isSuccess) {
       dispatch(allPostsActions.setPosts(data?.posts));
     }
+
+    // update archived posts of current user
+    if (Object.keys(currentUser).length > 0)
+      updateDoc(localStorage.getItem("accessToken") as string, currentUser);
+
     // on initial render, fetch new posts and/or post with updated info.
     queryClient.invalidateQueries({ queryKey: ["all-posts"] });
-  }, [data, isSuccess, dispatch]);
+  }, [data, isSuccess, dispatch, currentUser.archivedPosts]);
+
+  function showModal(value: boolean) {
+    setOpenNewMessageModal(value);
+  }
 
   return (
     <>
-      <PostModal />
+      <NewMessageModal
+        modalTitle="Share"
+        open={open!}
+        showNewMessageModal={showModal}
+      />
+      <PostModal showNewMessageModal={showModal} />
       <div
         className={`flex flex-col mx-auto ${
           isFetching ? "justify-center items-center h-[100vh]" : "my-[90px]"
@@ -47,7 +68,7 @@ function Feed() {
               ease: "easeIn",
               stiffness: "100",
             }}
-            className="rounded-lg bg-white font-bold p-2 z-50 shadow-lg w-[100px] mx-auto"
+            className="rounded-lg bg-white font-bold p-2 z-20 shadow-lg w-[100px] mx-auto"
             onClick={() =>
               queryClient.invalidateQueries({ queryKey: ["all-posts"] })
             }
@@ -59,7 +80,9 @@ function Feed() {
           <CircularProgress />
         ) : posts.length > 0 ? (
           posts.map((post) => {
-            return <Post key={post.id} post={post} />;
+            return (
+              <Post key={post.id} post={post} showNewMessageModal={showModal} />
+            );
           })
         ) : (
           <h1 className="font-bold text-2xl h-[100vh] items-center justify-center">

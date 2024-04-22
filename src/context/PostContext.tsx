@@ -23,7 +23,7 @@ const PostContext = createContext({
   archivePostHandler: (_post: postDetails) => {},
   unArchivePostHandler: (_post: postDetails) => {},
   setPostToShare: (_newValue: React.SetStateAction<postDetails>) => {},
-  postToShare: {},
+  postToShare: {} as postDetails,
 });
 
 export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
@@ -101,6 +101,12 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
       currentUserActions.updateUserData({ postId: postId, type: "deletepost" })
     );
     dispatch(allPostsActions.deletePost({ id: postId }));
+    dispatch(
+      currentUserActions.updateUserData({
+        likedPost: postId,
+        type: "likedPost",
+      })
+    );
   }
 
   function archivePostHandler(post: postDetails) {
@@ -113,6 +119,7 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
         type: "deletepost",
       })
     );
+    dispatch(allPostsActions.deletePost({ id: post.id }));
   }
 
   function unArchivePostHandler(post: postDetails) {

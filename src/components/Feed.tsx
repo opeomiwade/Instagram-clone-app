@@ -11,11 +11,6 @@ import { motion } from "framer-motion";
 import NewMessageModal from "./NewMessageModal";
 
 function Feed() {
-  const { data, isSuccess, isFetching, isStale } = useQuery({
-    queryKey: ["all-posts"],
-    queryFn: getPosts,
-    staleTime: 60000,
-  });
   const dispatch = useDispatch();
   const posts = useSelector(
     (state: { allPosts: { posts: postDetails[] } }) => state.allPosts.posts
@@ -27,18 +22,27 @@ function Feed() {
   );
   const [open, setOpenNewMessageModal] = useState<boolean>();
 
+  const { data, isSuccess, isFetching, isStale } = useQuery({
+    queryKey: ["all-posts"],
+    queryFn: getPosts,
+    staleTime: 60000,
+  });
+
   useEffect(() => {
     if (isSuccess) {
-      dispatch(allPostsActions.setPosts(data?.posts));
+      dispatch(allPostsActions.setPosts(data.posts));
     }
 
-    // update archived posts of current user
+    // // update archived posts of current user
     if (Object.keys(currentUser).length > 0)
-      updateDoc(localStorage.getItem("accessToken") as string, currentUser);
-
-    // on initial render, fetch new posts and/or post with updated info.
-    queryClient.invalidateQueries({ queryKey: ["all-posts"] });
-  }, [data, isSuccess, dispatch, currentUser.archivedPosts]);
+      updateDoc(
+        localStorage.getItem("accessToken") as string,
+        currentUser
+      ).then(() => {
+        // on initial render, fetch new posts and/or post with updated info.
+        queryClient.invalidateQueries({ queryKey: ["all-posts"] });
+      });
+  }, [data, isSuccess, dispatch, currentUser.archivedPosts, currentUser.posts]);
 
   function showModal(value: boolean) {
     setOpenNewMessageModal(value);

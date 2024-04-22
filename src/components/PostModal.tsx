@@ -159,8 +159,8 @@ const PostDialog: React.FC<{
             )}
             {post.comments &&
               post.comments.length > 0 &&
-              post.comments.map((comment) => {
-                return <Comment comment={comment} />;
+              post.comments.map((comment, index) => {
+                return <Comment key={index} comment={comment} />;
               })}
           </div>
           <hr />

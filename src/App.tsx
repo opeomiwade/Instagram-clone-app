@@ -11,7 +11,8 @@ import ErrorPage from "./components/ErrorPage";
 import ForgotPasswordPage, {
   action as forgotpass,
 } from "./pages/ForgotPasswordPage";
-import MessagesPage, {loader as messagesLoader} from "./pages/MessagesPage";
+import MessagesPage, { loader as messagesLoader } from "./pages/MessagesPage";
+import PostModalPage, { loader as postLoader } from "./pages/PostModalPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -29,13 +30,18 @@ function App() {
       action: forgotpass,
     },
     {
+      path: "/p/:postId",
+      element: <PostModalPage />,
+      loader: postLoader,
+    },
+    {
       path: "/home",
       element: <Root />,
       errorElement: <ErrorPage />,
       children: [
         { index: true, element: <HomePage />, loader: checkAuth },
         { path: ":username", element: <ProfilePage />, loader: profileLoader },
-        { path: "messages", element: <MessagesPage />, loader: messagesLoader},
+        { path: "messages", element: <MessagesPage />, loader: messagesLoader },
       ],
     },
   ]);

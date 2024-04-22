@@ -42,7 +42,6 @@ const ChatView: React.FC<{
         <Channel
           Avatar={() => <></>}
           DateSeparator={CustomDateSeparator}
-          // Input={CustomMessageInput}
           EmptyPlaceholder={emptyPlaceHolder}
         >
           <Window>

@@ -19,7 +19,6 @@ import checkDocumentExists, {
   decryptPassword,
 } from "./utils.js";
 import { StreamChat } from "stream-chat";
-import fs from "fs";
 
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
@@ -227,7 +226,7 @@ app.post("/update-stream-user-data", async (req, res) => {
 });
 
 app.post("/send-post", async (req, res) => {
-  const { members, post, message } = req.body;
+  const { members, post, message = "", postUrl } = req.body;
   try {
     const [channel] = await chatClient.queryChannels({
       members: [...members],
@@ -237,6 +236,7 @@ app.post("/send-post", async (req, res) => {
       attachments: [
         {
           type: "image",
+          title_link: postUrl,
           thumb_url: post.imageUrl,
           asset_url: post.imageUrl,
         },

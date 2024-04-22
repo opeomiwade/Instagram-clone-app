@@ -1,4 +1,4 @@
-import axios, { CancelTokenSource } from "axios";
+import axios from "axios";
 import { QueryClient } from "@tanstack/react-query";
 import { postDetails, userDetails } from "../types/types";
 
@@ -51,29 +51,19 @@ export async function updatePost(updatedPost: postDetails) {
  * @param {Object} requestBody - data passed to the backend
  * @param {string} updateType - Optional. Specifies the type of update.
  */
-export function updateDoc(
+export async function updateDoc(
   accessToken: string,
   requestBody: any,
-  updateType?: string,
-  cancelToken?: CancelTokenSource
+  updateType?: string
 ) {
-  // Cancel the previous request if it exists
-  if (cancelToken) {
-    cancelToken.cancel("Request canceled by updateDoc method");
-  }
-
-  // Create a new CancelTokenSource for this request
-  const newCancelToken = axios.CancelToken.source();
-
-  axios
-    .put("http://localhost:3000/update-document", requestBody, {
+  try {
+    axios.put("http://localhost:3000/update-document", requestBody, {
       headers: { Authorization: `Bearer ${accessToken}` },
       params: { updateType },
-      cancelToken: newCancelToken.token,
-    })
-    .then(() => {})
-    .catch((error) => console.log(error));
-  return newCancelToken;
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 /**
@@ -124,12 +114,25 @@ export async function updateStreamChatProfilePic(userData: userDetails) {
     .catch((error) => console.log(error));
 }
 
-export function sharePost(post: postDetails, members: string[], message?: string) {
+/**
+ *
+ * @param post method to share post with specified user via backend
+ * @param members
+ * @param message
+ * @param postUrl
+ */
+export function sharePost(
+  post: postDetails,
+  members: string[],
+  postUrl: string,
+  message?: string
+) {
   axios
     .post("http://localhost:3000/send-post", {
       members,
       post,
       message,
+      postUrl,
     })
     .then(() => {})
     .catch((error) => console.log(error));

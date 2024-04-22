@@ -211,8 +211,9 @@ const NewMessageModal: React.FC<{
             onClick={() => {
               if (modalTitle === "Share") {
                 sharePost(
-                  postToShare as postDetails,
+                  postToShare,
                   [selectedUsers[0].username, userData.username],
+                  `${window.location.origin}/p/${postToShare.id}`,
                   messageInputRef.current?.value
                 );
                 setPostToShare({} as postDetails);

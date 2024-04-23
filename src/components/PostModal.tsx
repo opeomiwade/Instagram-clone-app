@@ -17,6 +17,13 @@ import { motion } from "framer-motion";
 import Comment from "./Comment";
 import { updatePost } from "../util/http";
 import MoreDropDown from "./MoreDropdown";
+import {
+  SwipeableList,
+  TrailingActions,
+  SwipeAction,
+  SwipeableListItem,
+} from "react-swipeable-list";
+import "react-swipeable-list/dist/styles.css";
 
 const PostDialog: React.FC<{
   isCurrentUser?: boolean;
@@ -27,12 +34,20 @@ const PostDialog: React.FC<{
   const [comment, setNewComment] = useState<string>("");
   const [showMoreDropDown, setShow] = useState<boolean>(false);
   const ctx = useContext(PostContext);
-
   const sidebarState = useSelector(
     (state: { sidebar: { sidebarSelection: string } }) =>
       state.sidebar.sidebarSelection
   );
-
+  const trailingActions = () => (
+    <TrailingActions>
+      <SwipeAction
+        destructive={true}
+        onClick={() => console.log("swipe action triggered")}
+      >
+        Delete
+      </SwipeAction>
+    </TrailingActions>
+  );
   const post = useSelector(
     (state: { currentPost: { post: postDetails } }) => state.currentPost.post
   );
@@ -157,11 +172,20 @@ const PostDialog: React.FC<{
                 </h3>
               </div>
             )}
-            {post.comments &&
-              post.comments.length > 0 &&
-              post.comments.map((comment, index) => {
-                return <Comment key={index} comment={comment} />;
-              })}
+            {post.comments && post.comments.length > 0 && (
+              <SwipeableList>
+                {post.comments.map((comment, index) => {
+                  return (
+                    <SwipeableListItem
+                      key={index}
+                      trailingActions={trailingActions()}
+                    >
+                      <Comment comment={comment} />
+                    </SwipeableListItem>
+                  );
+                })}
+              </SwipeableList>
+            )}
           </div>
           <hr />
           <div className="flex justify-between p-2 h-[10%]">

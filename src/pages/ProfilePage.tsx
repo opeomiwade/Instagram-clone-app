@@ -32,7 +32,7 @@ export async function loader({ request }: { request: Request }) {
   let response;
   try {
     // get details of currently logged in user
-    response = await axios.get("http://localhost:3000/user-data", {
+    response = await axios.get("https://instagram-clone-app-server.onrender.com/user-data", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

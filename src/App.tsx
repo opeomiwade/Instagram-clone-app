@@ -12,7 +12,7 @@ import ForgotPasswordPage, {
   action as forgotpass,
 } from "./pages/ForgotPasswordPage";
 import MessagesPage, { loader as messagesLoader } from "./pages/MessagesPage";
-import PostModalPage, { loader as postLoader } from "./pages/PostModalPage";
+import PostPage, { loader as postLoader } from "./pages/PostPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -31,7 +31,8 @@ function App() {
     },
     {
       path: "/p/:postId",
-      element: <PostModalPage />,
+      element: <PostPage />,
+      errorElement:<ErrorPage/>,
       loader: postLoader,
     },
     {

@@ -22,7 +22,7 @@ export default MessagesPage;
 export async function loader() {
   if (localStorage.getItem("accessToken")) {
     try {
-      const response = await axios.get("http://localhost:3000/user-data", {
+      const response = await axios.get("https://instagram-clone-app-server.onrender.com/user-data", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },

@@ -187,7 +187,7 @@ const NewMessageModal: React.FC<{
         </div>
         <div className="absolute bottom-4 w-full flex justify-center flex-col">
           <AnimatePresence>
-            {selectedUsers.length > 0 && (
+            {selectedUsers.length > 0 && modalTitle == "Share" && (
               <motion.div
                 initial={{ y: 10 }}
                 animate={{ opacity: 1, y: 0 }}

@@ -5,6 +5,7 @@ import { redirect, useLoaderData, useNavigate } from "react-router-dom";
 import { postDetails } from "../types/types";
 import { currentPostActions } from "../store/redux-store";
 import { useDispatch } from "react-redux";
+import { json } from "react-router-dom";
 
 function PostModalPage() {
   const post = useLoaderData();
@@ -27,15 +28,19 @@ export async function loader({ request }: { request: Request }) {
     try {
       const {
         data: { posts },
-      } = await axios.get("http://localhost:3000/all-posts", {
+      } = await axios.get("https://instagram-clone-app-server.onrender.com/all-posts", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
       const [post] = posts.filter((post: postDetails) => post.id === postId);
+      if (!post) {
+        throw json({ message: "Post Not Found" });
+      }
       return post;
     } catch (error) {
       console.log(error);
+      throw json({ message: "Post Not Found" });
     }
   } else {
     return redirect("/home/messages");

@@ -228,9 +228,16 @@ app.post("/update-stream-user-data", async (req, res) => {
 app.post("/send-post", async (req, res) => {
   const { members, post, message = "", postUrl } = req.body;
   try {
-    const [channel] = await chatClient.queryChannels({
+    let [channel] = await chatClient.queryChannels({
       members: [...members],
     });
+    if (channel == undefined) {
+      channel = chatClient.channel("messaging", {
+        members: [...members],
+        created_by_id: members[1],
+      });
+      await channel.create();
+    }
     await channel.sendMessage({
       text: message.trim().length > 0 ? message : "",
       attachments: [

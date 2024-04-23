@@ -100,6 +100,20 @@ const currentUserSlice = createSlice({
           state.userData = { ...state.userData, posts: posts };
           break;
 
+        case "deletecomment":
+          const postId = action.payload.postID;
+          const commentToDelete = action.payload.comment;
+          const updatedPosts = state.userData.posts.map((post: postDetails) => {
+            if (post.id === postId) {
+              post.comments = post.comments.filter(
+                (comment) => comment.id !== commentToDelete.id
+              );
+            }
+            return post;
+          });
+          state.userData.posts = updatedPosts;
+          break;
+
         case "followaction":
           if (state.userData.following.includes(action.payload.username)) {
             state.userData.following = state.userData.following.filter(
@@ -180,6 +194,20 @@ const allPosts = createSlice({
         } else {
           return post;
         }
+      });
+      state.posts = posts;
+    },
+
+    deleteComment(state, action) {
+      const postId = action.payload.postId;
+      const commentToDelete = action.payload.comment;
+      let posts = state.posts.map((post: postDetails) => {
+        if (post.id === postId) {
+          post.comments = post.comments.filter(
+            (comment) => comment.id !== commentToDelete.id
+          );
+        }
+        return post;
       });
       state.posts = posts;
     },

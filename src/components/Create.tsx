@@ -11,6 +11,7 @@ import { currentUserActions, sidebarActions } from "../store/redux-store";
 import handleFileChange from "../util/handleFileChange";
 import uploadImage from "../util/uploadImage";
 import queryClient, { updateDoc } from "../util/http";
+import ShortUniqueId from "short-unique-id";
 
 const Create = () => {
   const fileInputRef = useRef<HTMLInputElement>();
@@ -20,6 +21,8 @@ const Create = () => {
   const [caption, setCaption] = useState<string>("");
   const [sharing, setSharing] = useState<boolean>(false);
   const [cancelIcon, setCancelClicked] = useState<boolean | undefined>();
+  const postIdGen = new ShortUniqueId({ length: 20 });
+
   const open = useSelector(
     (state: { sidebar: { createModal: boolean } }) => state.sidebar.createModal
   );
@@ -31,15 +34,16 @@ const Create = () => {
   async function shareButtonHandler() {
     setSharing(true);
     try {
+      const postId = postIdGen.rnd() + userData.username;
       const imageUrl = await uploadImage(
         fileInputRef.current!.files![0],
         userData.username,
-        `post-images/p${userData.posts.length + 1}/`
+        `post-images/${userData.username}/${postId}`
       );
       dispatch(
         currentUserActions.updateUserData({
           newPost: {
-            id: `${userData.posts.length + 1}${userData.username}`,
+            id: postId,
             username: userData.username,
             imageUrl,
             caption,
@@ -63,9 +67,13 @@ const Create = () => {
     dispatch(sidebarActions.updateSidebarState("create"));
     fileInputRef.current!.value = "";
     if (!cancelIcon) {
-      updateDoc(localStorage.getItem("accessToken")!, userData.posts[userData.posts.length - 1], "post")
-      queryClient.invalidateQueries({ queryKey: ["all-posts"] });  // forces useQuery hook to refetch posts
-    } 
+      updateDoc(
+        localStorage.getItem("accessToken")!,
+        userData.posts[userData.posts.length - 1],
+        "post"
+      );
+      queryClient.invalidateQueries({ queryKey: ["all-posts"] }); // forces useQuery hook to refetch posts
+    }
   }
 
   return createPortal(

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { allPostsActions, currentUserActions } from "../store/redux-store";
 import { postDetails } from "../types/types";
 import { updateDoc } from "../util/http";
+import ShortUniqueId from "short-unique-id";
 
 const PostContext = createContext({
   likePostHandler: async (
@@ -22,8 +23,9 @@ const PostContext = createContext({
   deletePostHandler: (_postId: string) => {},
   archivePostHandler: (_post: postDetails) => {},
   unArchivePostHandler: (_post: postDetails) => {},
-  setPostToShare: (_newValue: React.SetStateAction<postDetails>) => {},
   postToShare: {} as postDetails,
+  setPostToShare: (_newValue: React.SetStateAction<postDetails>) => {},
+  deleteCommentHandler: (_post: postDetails, _comment: object) => {},
 });
 
 export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
@@ -33,6 +35,7 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
   const [postToShare, setPostToShare] = useState<postDetails>(
     {} as postDetails
   );
+  const idGenerator = new ShortUniqueId();
   const dispatch = useDispatch();
   const userData = useSelector(
     (state: { currentUser: { userData: { [key: string]: any } } }) =>
@@ -87,11 +90,36 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
     dispatch(
       allPostsActions.updateComments({
         comment: {
+          id: idGenerator.rnd(),
           comment: comment,
           profilePic: userData.profilePic,
           username: userData.username,
         },
         postID: post.id,
+      })
+    );
+    dispatch(
+      currentUserActions.updateUserData({
+        comment,
+        postID: post.id,
+        type: "newcomment",
+      })
+    );
+  }
+
+  async function deleteCommentHandler(
+    post: postDetails,
+    comment: { [key: string]: any }
+  ) {
+    setChanged(true);
+    dispatch(
+      allPostsActions.deleteComment({ postId: post.id, comment: comment })
+    );
+    dispatch(
+      currentUserActions.updateUserData({
+        postID: post.id,
+        comment: comment,
+        type: "deletecomment",
       })
     );
   }
@@ -159,6 +187,7 @@ export const PostContextProvider: React.FC<{ children: ReactNode }> = ({
     unArchivePostHandler,
     postToShare,
     setPostToShare,
+    deleteCommentHandler,
   };
 
   return <PostContext.Provider value={values}>{children}</PostContext.Provider>;

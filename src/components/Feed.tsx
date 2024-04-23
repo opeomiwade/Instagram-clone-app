@@ -42,7 +42,7 @@ function Feed() {
         // on initial render, fetch new posts and/or post with updated info.
         queryClient.invalidateQueries({ queryKey: ["all-posts"] });
       });
-  }, [data, isSuccess, dispatch, currentUser.archivedPosts, currentUser.posts]);
+  }, [data, isSuccess, dispatch, currentUser.archivedPosts]);
 
   function showModal(value: boolean) {
     setOpenNewMessageModal(value);

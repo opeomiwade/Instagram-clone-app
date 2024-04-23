@@ -24,6 +24,7 @@ import {
   SwipeableListItem,
 } from "react-swipeable-list";
 import "react-swipeable-list/dist/styles.css";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const PostDialog: React.FC<{
   isCurrentUser?: boolean;
@@ -34,20 +35,13 @@ const PostDialog: React.FC<{
   const [comment, setNewComment] = useState<string>("");
   const [showMoreDropDown, setShow] = useState<boolean>(false);
   const ctx = useContext(PostContext);
+  const dispatch = useDispatch();
+
   const sidebarState = useSelector(
     (state: { sidebar: { sidebarSelection: string } }) =>
       state.sidebar.sidebarSelection
   );
-  const trailingActions = () => (
-    <TrailingActions>
-      <SwipeAction
-        destructive={true}
-        onClick={() => console.log("swipe action triggered")}
-      >
-        Delete
-      </SwipeAction>
-    </TrailingActions>
-  );
+
   const post = useSelector(
     (state: { currentPost: { post: postDetails } }) => state.currentPost.post
   );
@@ -56,7 +50,22 @@ const PostDialog: React.FC<{
     (state: { currentUser: { userData: { [key: string]: any } } }) =>
       state.currentUser.userData
   );
-  const dispatch = useDispatch();
+
+  const trailingActions = (comment: object) => (
+    <TrailingActions>
+      <SwipeAction
+        destructive={true}
+        onClick={() => {
+          ctx.deleteCommentHandler(post, comment);
+        }}
+      >
+        <div className="flex gap-2 bg-red-500 items-center">
+          <DeleteIcon style={{ fontSize: "30px", fill: "white" }} />{" "}
+          <p className="text-bold text-white">Delete</p>
+        </div>
+      </SwipeAction>
+    </TrailingActions>
+  );
 
   function emojiButtonHandler() {
     setPicker(!showEmojiPicker);
@@ -178,7 +187,7 @@ const PostDialog: React.FC<{
                   return (
                     <SwipeableListItem
                       key={index}
-                      trailingActions={trailingActions()}
+                      trailingActions={trailingActions(comment)}
                     >
                       <Comment comment={comment} />
                     </SwipeableListItem>

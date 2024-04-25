@@ -1,14 +1,16 @@
 import Post from "./Post";
-import PostModal from "./PostModal";
+import PostModal from "./Modals/PostModal";
 import { useEffect, useState } from "react";
-import { postDetails } from "../types/types";
+import { postDetails, userDetails } from "../types/types";
 import { useQuery } from "@tanstack/react-query";
 import queryClient, { getPosts, updateDoc } from "../util/http";
 import { useSelector, useDispatch } from "react-redux";
 import { allPostsActions } from "../store/redux-store";
 import { CircularProgress } from "@mui/material";
 import { motion } from "framer-motion";
-import NewMessageModal from "./NewMessageModal";
+import NewMessageModal from "./Modals/NewMessageModal";
+import Suggestions from "./Suggestions";
+import { getAllUsers } from "../util/getUserDoc";
 
 function Feed() {
   const dispatch = useDispatch();
@@ -21,12 +23,56 @@ function Feed() {
       state.currentUser.userData
   );
   const [open, setOpenNewMessageModal] = useState<boolean>();
+  const [suggestions, setSuggestions] = useState<userDetails[]>();
+  const [showSuggestions, setShow] = useState<boolean>(true);
 
   const { data, isSuccess, isFetching, isStale } = useQuery({
     queryKey: ["all-posts"],
     queryFn: getPosts,
     staleTime: 60000,
   });
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const allUsers = (await queryClient.fetchQuery({
+          queryKey: ["all-users"],
+          queryFn: getAllUsers,
+          staleTime: 60000,
+        })) as userDetails[];
+        setSuggestions(() => {
+          if (currentUser.following && currentUser.following.length > 0) {
+            return allUsers.filter(
+              (user) =>
+                user.username !== currentUser.username &&
+                !currentUser.following.includes(user.username)
+            );
+          } else {
+            return allUsers.filter(
+              (user) => user.username !== currentUser.username
+            );
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect.width < 1160) {
+          setShow(false);
+        } else {
+          setShow(true);
+        }
+      }
+    });
+    resizeObserver.observe(document.documentElement);
+    fetchData();
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [currentUser.following]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -42,7 +88,7 @@ function Feed() {
         // on initial render, fetch new posts and/or post with updated info.
         queryClient.invalidateQueries({ queryKey: ["all-posts"] });
       });
-  }, [data, isSuccess, dispatch, currentUser.archivedPosts]);
+  }, [data, isSuccess, currentUser.archivedPosts]);
 
   function showModal(value: boolean) {
     setOpenNewMessageModal(value);
@@ -56,46 +102,54 @@ function Feed() {
         showNewMessageModal={showModal}
       />
       <PostModal showNewMessageModal={showModal} />
-      <div
-        className={`flex flex-col mx-auto ${
-          isFetching ? "justify-center items-center h-[100vh]" : "my-[90px]"
-        }`}
-      >
-        {isStale && !isFetching && (
-          <motion.button
-            initial={{ x: 0, y: -100 }}
-            animate={{ x: 0, y: 0, opacity: 1 }}
-            exit={{ y: -50, opacity: 0 }}
-            transition={{
-              type: "spring",
-              duration: 1,
-              ease: "easeIn",
-              stiffness: "100",
-            }}
-            className="rounded-lg bg-white font-bold p-2 z-20 shadow-lg w-[100px] mx-auto"
-            onClick={() =>
-              queryClient.invalidateQueries({ queryKey: ["all-posts"] })
-            }
-          >
-            New Posts
-          </motion.button>
-        )}
-        {isFetching ? (
-          <CircularProgress />
-        ) : posts.length > 0 ? (
-          posts.map((post) => {
-            return (
-              <Post key={post.id} post={post} showNewMessageModal={showModal} />
-            );
-          })
-        ) : (
-          <h1 className="font-bold text-2xl h-[100vh] items-center justify-center">
-            No Posts
-          </h1>
+      <div className="flex justify-between mx-auto">
+        <div
+          className={`flex flex-col ${
+            isFetching ? "justify-center items-center h-[100vh]" : "my-[90px]"
+          }`}
+        >
+          {isStale && !isFetching && (
+            <motion.button
+              initial={{ x: 0, y: -100 }}
+              animate={{ x: 0, y: 0, opacity: 1 }}
+              exit={{ y: -50, opacity: 0 }}
+              transition={{
+                type: "spring",
+                duration: 1,
+                ease: "easeIn",
+                stiffness: "100",
+              }}
+              className="rounded-lg bg-white font-bold p-2 z-20 shadow-lg w-[100px] mx-auto"
+              onClick={() =>
+                queryClient.invalidateQueries({ queryKey: ["all-posts"] })
+              }
+            >
+              New Posts
+            </motion.button>
+          )}
+          {isFetching ? (
+            <CircularProgress />
+          ) : posts.length > 0 ? (
+            posts.map((post) => {
+              return (
+                <Post
+                  key={post.id}
+                  post={post}
+                  showNewMessageModal={showModal}
+                />
+              );
+            })
+          ) : (
+            <h1 className="font-bold text-2xl h-[100vh] items-center justify-center">
+              No Posts
+            </h1>
+          )}
+        </div>
+        {suggestions && showSuggestions && (
+          <Suggestions suggestions={suggestions as userDetails[]} />
         )}
       </div>
     </>
   );
 }
-
 export default Feed;

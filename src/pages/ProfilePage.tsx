@@ -1,4 +1,4 @@
-import UserProfile from "../components/UserProfile";
+import UserProfile from "../components/UserProfile-UI/UserProfile";
 import getUserDoc from "../util/getUserDoc";
 import { useLoaderData, json } from "react-router";
 import { useEffect } from "react";

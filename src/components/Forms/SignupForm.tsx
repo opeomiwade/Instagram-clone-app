@@ -1,9 +1,9 @@
 import React, { useState, useRef } from "react";
 import { Form, Link } from "react-router-dom";
-import Input from "./Input";
-import classes from "../CSS/AuthPage.module.css";
+import Input from "../Input";
+import classes from "../../CSS/AuthPage.module.css";
 import { useNavigation } from "react-router-dom";
-import { errorObj } from "../pages/LoginPage";
+import { errorObj } from "../../pages/LoginPage";
 
 const SignupForm: React.FC<{ error: errorObj }> = ({ error }) => {
   const [disabled, setDisabled] = useState<boolean>(true);

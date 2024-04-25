@@ -1,16 +1,16 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
 import { createPortal } from "react-dom";
-import classes from "../CSS/Modal.module.css";
+import classes from "../../CSS/Modal.module.css";
 import CloseIcon from "@mui/icons-material/Close";
-import queryClient from "../util/http";
-import getUserDoc, { getAllUsers } from "../util/getUserDoc";
-import { userDetails } from "../types/types";
-import UserSearchResult from "./UserSearchResult";
+import queryClient from "../../util/http";
+import getUserDoc, { getAllUsers } from "../../util/getUserDoc";
+import { userDetails } from "../../types/types";
+import UserSearchResult from "../UserSearchResult";
 import { useSelector } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
-import { postDetails } from "../types/types";
-import { sharePost } from "../util/http";
-import PostContext from "../context/PostContext";
+import { postDetails } from "../../types/types";
+import { sharePost } from "../../util/http";
+import PostContext from "../../context/PostContext";
 
 const NewMessageModal: React.FC<{
   open: boolean;
@@ -175,9 +175,7 @@ const NewMessageModal: React.FC<{
             searchResults?.map((user) => (
               <UserSearchResult
                 key={user.username}
-                name={user.name}
-                username={user.username}
-                profilePic={user.profilePic}
+                user={user}
                 clickHandler={searchResultClickHandler}
               />
             ))
@@ -187,7 +185,7 @@ const NewMessageModal: React.FC<{
         </div>
         <div className="absolute bottom-4 w-full flex justify-center flex-col">
           <AnimatePresence>
-            {selectedUsers.length > 0 && modalTitle == "Share" && (
+            {selectedUsers.length > 0 && modalTitle === "Share" && (
               <motion.div
                 initial={{ y: 10 }}
                 animate={{ opacity: 1, y: 0 }}

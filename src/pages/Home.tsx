@@ -8,15 +8,13 @@ import { useEffect } from "react";
 import { PostContextProvider } from "../context/PostContext";
 
 function Home() {
-  const currentUserData = useLoaderData();
+  const currentUserData = useLoaderData() as {
+    userData: { [key: string]: any };
+  };
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(
-      currentUserActions.setCurrentUser(
-        currentUserData as { userData: { [key: string]: any } }
-      )
-    );
+    dispatch(currentUserActions.setCurrentUser(currentUserData));
     dispatch(sidebarActions.updateSidebarState("home"));
   }, []);
 
@@ -32,11 +30,14 @@ export async function loader() {
     return redirect("/");
   } else {
     try {
-      const response = await axios.get("https://instagram-clone-app-server.onrender.com/user-data", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      const response = await axios.get(
+        "https://instagram-clone-app-server.onrender.com/user-data",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       console.log(error);

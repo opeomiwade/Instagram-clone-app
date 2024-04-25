@@ -38,6 +38,7 @@ const MessageInput: React.FC = () => {
 
   function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setOpen(false) // close emoji picker when user sends message
     handleSubmit(event);
   }
 

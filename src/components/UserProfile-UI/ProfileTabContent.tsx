@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
-import { postDetails } from "../types/types";
-import { currentPostActions } from "../store/redux-store";
+import { postDetails } from "../../types/types";
+import { currentPostActions } from "../../store/redux-store";
 
 const Content: React.FC<{ posts: postDetails[] }> = ({ posts }) => {
   const dispatch = useDispatch();

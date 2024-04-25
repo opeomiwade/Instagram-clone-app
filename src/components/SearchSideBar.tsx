@@ -7,7 +7,7 @@ import { getAllUsers } from "../util/getUserDoc";
 import { useNavigate } from "react-router";
 import { userDetails } from "../types/types";
 import { useSelector, useDispatch } from "react-redux";
-import { recentsActions } from "../store/redux-store";
+import { recentsActions, sidebarActions } from "../store/redux-store";
 import Recents from "./Recents";
 import UserSearchResult from "./UserSearchResult";
 
@@ -24,7 +24,7 @@ function SearchSideBar() {
   const recents = useSelector(
     (state: { recents: { recents: userDetails[] } }) => state.recents.recents
   );
-  
+
   function changeHandler(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.value.trim() !== "") {
       let result = data?.filter(
@@ -44,6 +44,7 @@ function SearchSideBar() {
     const username = event.currentTarget.id;
     const searchedUser = data?.find((user) => user.username === username);
     dispatch(recentsActions.setRecentSearches({ recent: searchedUser }));
+    dispatch(sidebarActions.updateSidebarState("profile"));
     navigate(username);
   }
 
@@ -82,9 +83,7 @@ function SearchSideBar() {
             return (
               <UserSearchResult
                 key={user.username}
-                username={user.username}
-                profilePic={user.profilePic}
-                name={user.name}
+                user={user}
                 clickHandler={clickHandler}
               />
             );

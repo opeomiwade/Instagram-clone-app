@@ -135,6 +135,7 @@ const currentUserSlice = createSlice({
             (post: postDetails) => post.id != action.payload.postId
           );
           break;
+
         case "archive-action":
           //check if at least one element in the array satisfies a condition specified by the provided function.
           if (
@@ -150,6 +151,13 @@ const currentUserSlice = createSlice({
           }
           break;
 
+        case "profilepic-posts":
+          state.userData.posts = state.userData.posts.map(
+            (post: postDetails) => {
+              return { ...post, profilePic: action.payload.profilePic };
+            }
+          );
+          break;
         default:
           state.userData = { ...state.userData, ...action.payload.userData };
           break;

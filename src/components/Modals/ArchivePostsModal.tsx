@@ -1,9 +1,9 @@
-import classes from "../CSS/Modal.module.css";
+import classes from "../../CSS/Modal.module.css";
 import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { postDetails } from "../types/types";
+import { postDetails } from "../../types/types";
 import CloseIcon from "@mui/icons-material/Close";
-import { currentPostActions } from "../store/redux-store";
+import { currentPostActions } from "../../store/redux-store";
 
 const ArchivePostsModal: React.FC<{ closeModal: () => void }> = ({
   closeModal,

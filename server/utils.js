@@ -15,13 +15,12 @@ import {
   createCipheriv,
   createDecipheriv,
 } from "crypto";
-import { StreamChat } from "stream-chat";
 
 /**
  * checks if document exists
  * @param {*} username
  * @param {*} db
- * @returns {DocumentSnapshot<DocumentData, DocumentData>}
+ * @returns {docSnapShot<DocumentData, DocumentData>}
  */
 export default async function checkDocumentExists(username, db) {
   const docRef = doc(db, "users", username);
@@ -128,9 +127,6 @@ export async function updateDocument(db, username, updateType, newData) {
  * @returns
  */
 export function encryptPassword(plainPassword, passwordGenerateKey) {
-  console.log(plainPassword);
-  console.log(passwordGenerateKey);
-
   return new Promise((resolve, reject) => {
     const algorithm = "aes-192-cbc";
     try {
@@ -183,4 +179,3 @@ export function decryptPassword(encryptedPassword, passwordGenerateKey) {
     console.log(error);
   }
 }
-

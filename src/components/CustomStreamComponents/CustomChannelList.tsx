@@ -2,7 +2,7 @@ import { ChannelListMessengerProps, useChatContext } from "stream-chat-react";
 import React, { PropsWithChildren, useState } from "react";
 import { motion } from "framer-motion";
 import NewChatIcon from "../NewChatIcon";
-import NewMessageModal from "../NewMessageModal";
+import NewMessageModal from "../Modals/NewMessageModal";
 import { useSelector } from "react-redux";
 import { userDetails } from "../../types/types";
 

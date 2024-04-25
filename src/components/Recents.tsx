@@ -1,9 +1,10 @@
 import { userDetails } from "../types/types";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useDispatch } from "react-redux";
-import { recentsActions } from "../store/redux-store";
+import { recentsActions, sidebarActions } from "../store/redux-store";
 import { useNavigate } from "react-router";
 import React from "react";
+import CircleIcon from "@mui/icons-material/Circle";
 
 const Recents: React.FC<{ recentSearches: userDetails[] }> = ({
   recentSearches,
@@ -32,7 +33,10 @@ const Recents: React.FC<{ recentSearches: userDetails[] }> = ({
           <div
             id={user.username}
             key={user.username}
-            onClick={() => navigate(user.username)}
+            onClick={() => {
+              dispatch(sidebarActions.updateSidebarState("profile"));
+              navigate(user.username);
+            }}
             className="flex justify-between mt-4 items-center w-full hover:cursor-pointer hover:bg-gray-200 p-2 rounded-md"
           >
             <div className="flex gap-4 items-center">
@@ -42,7 +46,15 @@ const Recents: React.FC<{ recentSearches: userDetails[] }> = ({
               />
               <div className="flex flex-col items-start">
                 <h3 className="font-bold text-left text-sm">{user.username}</h3>
-                <p className="text-gray-500 text-left">{user.name}</p>
+                <div className="flex items-start">
+                  <p className="text-sm text-gray-500 text-left">{user.name}</p>
+                  <p className="text-sm text-gray-500">
+                    <CircleIcon style={{ fontSize: "5px", fill: "gray" }} />{" "}
+                    {user.following.includes(user.username)
+                      ? "Following"
+                      : `${user.followers.length} followers`}
+                  </p>
+                </div>
               </div>
             </div>
             <button onClick={removeSearchHandler} id={user.username}>

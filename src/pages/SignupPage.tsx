@@ -1,4 +1,4 @@
-import SignupForm from "../components/SignupForm";
+import SignupForm from "../components/Forms/SignupForm";
 import Footer from "../components/Footer";
 import axios, { AxiosResponse } from "axios";
 import { useActionData, json, redirect } from "react-router";

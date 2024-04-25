@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import ProfileTabs from "./ProfileTabs";
+import ProfileTabs from "../ProfileTabs";
 import { useSelector } from "react-redux";
 import ProfileImageModal from "./ProfileImageModal";
-import NoPosts from "./NoPosts";
-import PostModal from "./PostModal";
+import NoPosts from "../NoPosts";
+import PostModal from "../Modals/PostModal";
 import TabContent from "./ProfileTabContent";
-import { postDetails, userDetails } from "../types/types";
-import { updateDoc } from "../util/http";
-import FollowListModal from "../components/FollowingFollowerModal";
+import { postDetails, userDetails } from "../../types/types";
+import { updateDoc } from "../../util/http";
+import FollowListModal from "../Modals/FollowingFollowerModal";
 import ProfileHeader from "./ProfileHeader";
-import ArchivePostsModal from "./ArchivePostsModal";
+import ArchivePostsModal from "../Modals/ArchivePostsModal";
 
 const Profile: React.FC<{ userData: { [key: string]: any } }> = ({
   userData,

@@ -1,10 +1,9 @@
-import image from "../assets/account circle.jpeg";
-import { useRef, Ref } from "react";
+import { useRef, Ref, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { sidebarActions, currentUserActions } from "../store/redux-store";
+import { sidebarActions, currentUserActions } from "../../store/redux-store";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { HeaderProps } from "../types/types";
+import { HeaderProps } from "../../types/types";
 
 const Header: React.FC<HeaderProps> = ({
   userData,
@@ -17,14 +16,27 @@ const Header: React.FC<HeaderProps> = ({
   const followButtonRef = useRef<HTMLButtonElement>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [mutualFollowers, setMutuals] = useState<string[]>([]);
 
   async function logOutHandler() {
     dispatch(sidebarActions.updateSidebarState("home"));
     localStorage.removeItem("accessToken");
     localStorage.removeItem("streamAccessToken");
-    await axios.post("https://instagram-clone-app-server.onrender.com/sign-out");
+    await axios.post(
+      "https://instagram-clone-app-server.onrender.com/sign-out"
+    );
     navigate("/");
   }
+
+  useEffect(() => {
+    setMutuals(() => {
+      if (currentUser.following) {
+        return currentUser.following.filter((user: string) =>
+          userData.followers.includes(user)
+        );
+      }
+    });
+  }, [currentUser.following, userData.followers]);
 
   function followButtonHandler() {
     if (!isCurrentUser) {
@@ -55,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({
         onClick={() => {
           openProfileImageModal();
         }}
-        src={userData.profilePic || image}
+        src={userData.profilePic}
         className="rounded-full flex shrink max-w-[150px] max-h-[150px] hover:cursor-pointer"
       />
       <div className="flex flex-col justify-center gap-[25px]">
@@ -101,9 +113,12 @@ const Header: React.FC<HeaderProps> = ({
           >{`${userData.following.length} following`}</h3>
         </div>
         <h4 className="font-bold">{userData.name}</h4>
-        <h4 className="font-semibold text-sm">
-          Followed by kingjames, espn, kai_cenat
-        </h4>
+        {mutualFollowers.length > 0 && (
+          <h4 className="font-semibold text-sm truncate">
+            <span className="text-xs text-gray-500">Followed by</span>{" "}
+            {mutualFollowers}
+          </h4>
+        )}
       </div>
     </header>
   );

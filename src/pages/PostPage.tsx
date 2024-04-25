@@ -1,4 +1,4 @@
-import PostModal from "../components/PostModal";
+import PostModal from "../components/Modals/PostModal";
 import axios from "axios";
 import { useEffect } from "react";
 import { redirect, useLoaderData, useNavigate } from "react-router-dom";

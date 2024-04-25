@@ -1,11 +1,12 @@
 import { createPortal } from "react-dom";
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import uploadImage from "../util/uploadImage";
+import uploadImage from "../../util/uploadImage";
 import { useDispatch } from "react-redux";
-import { currentUserActions } from "../store/redux-store";
-import { updateDoc, updateStreamChatProfilePic } from "../util/http";
-import { userDetails } from "../types/types";
+import { currentUserActions } from "../../store/redux-store";
+import { updateDoc, updateStreamChatProfilePic } from "../../util/http";
+import { userDetails } from "../../types/types";
+import queryClient from "../../util/http";
 
 const ProfileImageModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   open,
@@ -36,22 +37,43 @@ const ProfileImageModal: React.FC<{ open: boolean; onClose: () => void }> = ({
     dispatch(
       currentUserActions.updateUserData({ userData: { profilePic: url } })
     );
+    dispatch(
+      currentUserActions.updateUserData({
+        type: "profilepic-posts",
+        profilePic: url,
+      })
+    );
     updateDoc(localStorage.getItem("accessToken")!, {
       profilePic: url,
       username: userData.username,
     });
-    updateStreamChatProfilePic(userData as userDetails)
+    updateStreamChatProfilePic(userData as userDetails);
     inputRef.current!.value = "";
+    // refetch posts as profilePic of user has been updated, therefore profilePic in post object is updated as well
+    queryClient.invalidateQueries({ queryKey: ["all-posts"] });
   }
 
   async function removeCurrentPhoto() {
     dilaogRef.current?.close();
+    const defaultImage =
+      "https://firebasestorage.googleapis.com/v0/b/instagram-clone-5b47d.appspot.com/o/account%20circle.jpeg?alt=media&token=ec3c29d8-5b89-447b-ac2e-651af9e4e394";
     dispatch(
       currentUserActions.updateUserData({
-        userData: { profilePic: "" },
+        userData: { profilePic: defaultImage },
       })
     );
-    updateDoc(localStorage.getItem("accessToken")!, { profilePic: "" });
+    dispatch(
+      currentUserActions.updateUserData({
+        type: "profilepic-posts",
+        profilePic: "",
+      })
+    );
+    updateDoc(localStorage.getItem("accessToken")!, {
+      profilePic: defaultImage,
+      username: userData.username,
+    });
+    // refetch posts as profilePic of user has been updated, therefore profilePic in post object is updated as well
+    queryClient.invalidateQueries({ queryKey: ["all-posts"] });
   }
 
   return createPortal(
@@ -70,6 +92,7 @@ const ProfileImageModal: React.FC<{ open: boolean; onClose: () => void }> = ({
         <input
           name="profilepic"
           type="file"
+          accept="/imageFile/png imageFile/jpeg imageFile/jpg "
           hidden
           ref={inputRef as React.Ref<HTMLInputElement>}
           onChange={changeHandler}

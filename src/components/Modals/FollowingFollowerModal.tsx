@@ -1,14 +1,14 @@
 import { createPortal } from "react-dom";
-import classes from "../CSS/Modal.module.css";
+import classes from "../../CSS/Modal.module.css";
 import React, { useEffect, useRef, useState } from "react";
-import { getAllUsers } from "../util/getUserDoc";
-import queryClient from "../util/http";
+import { getAllUsers } from "../../util/getUserDoc";
+import queryClient from "../../util/http";
 import CloseIcon from "@mui/icons-material/Close";
-import { userDetails } from "../types/types";
+import { userDetails } from "../../types/types";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import { currentUserActions } from "../store/redux-store";
-import { updateDoc } from "../util/http";
+import { currentUserActions } from "../../store/redux-store";
+import { updateDoc } from "../../util/http";
 
 const List: React.FC<{
   title: string;
@@ -149,80 +149,76 @@ const List: React.FC<{
             onChange={changeHandler}
           />
         </div>
-        {title === "Following" &&
-          followingList?.map((user) => {
-            return (
-              <div
-                key={user.username}
-                className="flex justify-between p-4 mb-2"
-              >
-                <div className="flex items-center gap-2">
-                  <img
-                    src={user.profilePic}
-                    className="w-[40px] h-[40px] rounded-full"
-                  />
-                  <h4
-                    className="font-bold flex flex-col text-sm hover:cursor-pointer"
-                    onClick={() => {
-                      navigate(`/home/${user.username}`);
-                      closeModal();
-                    }}
-                  >
-                    {user.username}
-                    <span className="text-gray-600 font-normal">
-                      {user.name}
-                    </span>
-                  </h4>
+        <div className="flex flex-col gap-4 p-4">
+          {title === "Following" &&
+            followingList?.map((user) => {
+              return (
+                <div key={user.username} className="flex justify-between">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={user.profilePic}
+                      className="w-[40px] h-[40px] rounded-full"
+                    />
+                    <h4
+                      className="font-bold flex flex-col text-sm hover:cursor-pointer"
+                      onClick={() => {
+                        navigate(`/home/${user.username}`);
+                        closeModal();
+                      }}
+                    >
+                      {user.username}
+                      <span className="text-gray-600 font-normal">
+                        {user.name}
+                      </span>
+                    </h4>
+                  </div>
+                  {isCurrentUser && (
+                    <button
+                      id={user.username}
+                      className="bg-gray-200 rounded-lg font-bold text-xs max-w-[100px] w-[100px] hover:bg-gray-300"
+                      onClick={followingButtonHandler}
+                    >
+                      Following
+                    </button>
+                  )}
                 </div>
-                {isCurrentUser && (
-                  <button
-                    id={user.username}
-                    className="bg-gray-200 rounded-lg font-bold text-xs max-w-[100px] w-[100px] hover:bg-gray-300"
-                    onClick={followingButtonHandler}
-                  >
-                    Following
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        {title === "Followers" &&
-          followersList?.map((user) => {
-            return (
-              <div
-                key={user.username}
-                className="flex justify-between p-4 mb-2"
-              >
-                <div className="flex items-center gap-2">
-                  <img
-                    src={user.profilePic}
-                    className="w-[40px] h-[40px] rounded-full"
-                  />
-                  <h4
-                    onClick={() => {
-                      navigate(`/home/${user.username}`);
-                      closeModal();
-                    }}
-                    className="font-bold flex flex-col text-sm hover:cursor-pointer"
-                  >
-                    {user.username}
-                    <span className="text-gray-600 font-normal">
-                      {user.name}
-                    </span>
-                  </h4>
+              );
+            })}
+          {title === "Followers" &&
+            followersList?.map((user) => {
+              return (
+                <div key={user.username} className="flex justify-between">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={user.profilePic}
+                      className="w-[40px] h-[40px] rounded-full"
+                    />
+                    <h4
+                      onClick={() => {
+                        navigate(`/home/${user.username}`);
+                        closeModal();
+                      }}
+                      className="font-bold flex flex-col text-sm hover:cursor-pointer"
+                    >
+                      {user.username}
+                      <span className="text-gray-600 font-normal">
+                        {user.name}
+                      </span>
+                    </h4>
+                  </div>
+                  {isCurrentUser && (
+                    <button
+                      id={user.username}
+                      onClick={removeButtonHandler}
+                      className="bg-gray-200 rounded-lg font-bold text-xs max-w-[100px] w-[100px] hover:bg-gray-300"
+                    >
+                      Remove
+                    </button>
+                  )}
                 </div>
-                {isCurrentUser && (
-                  <button
-                    id={user.username}
-                    onClick={removeButtonHandler}
-                    className="bg-gray-200 rounded-lg font-bold text-xs max-w-[100px] w-[100px] hover:bg-gray-300"
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
+        </div>
       </div>
     </dialog>,
     document.getElementById("modal")!

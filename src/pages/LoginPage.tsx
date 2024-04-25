@@ -1,4 +1,4 @@
-import LoginForm from "../components/LoginForm";
+import LoginForm from "../components/Forms/LoginForm";
 import classes from "../CSS/AuthPage.module.css";
 import Footer from "../components/Footer";
 import screenshot1 from "../assets/screenshot1-2x.png";

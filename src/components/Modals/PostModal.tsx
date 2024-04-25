@@ -6,17 +6,17 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import CommentIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import BookmarkIcon from "@mui/icons-material/BookmarkOutlined";
-import classes from "../CSS/Modal.module.css";
+import classes from "../../CSS/Modal.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import { postDetails } from "../types/types";
-import { currentPostActions } from "../store/redux-store";
+import { postDetails } from "../../types/types";
+import { currentPostActions } from "../../store/redux-store";
 import { useState, useContext } from "react";
-import CommentInput from "./CommentInput";
-import PostContext from "../context/PostContext";
+import CommentInput from "../CommentInput";
+import PostContext from "../../context/PostContext";
 import { motion } from "framer-motion";
-import Comment from "./Comment";
-import { updatePost } from "../util/http";
-import MoreDropDown from "./MoreDropdown";
+import Comment from "../Comment";
+import { updatePost } from "../../util/http";
+import MoreDropDown from "../MoreDropdown";
 import {
   SwipeableList,
   TrailingActions,
@@ -183,14 +183,18 @@ const PostDialog: React.FC<{
             )}
             {post.comments && post.comments.length > 0 && (
               <SwipeableList>
-                {post.comments.map((comment, index) => {
-                  return (
+                {post.comments.map((comment) => {
+                  //only users that own a post or comment can delete comments
+                  return userData.username === comment.username ||
+                    userData.username === post.username ? (
                     <SwipeableListItem
-                      key={index}
+                      key={comment.id}
                       trailingActions={trailingActions(comment)}
                     >
                       <Comment comment={comment} />
                     </SwipeableListItem>
+                  ) : (
+                    <Comment key={comment.id} comment={comment} />
                   );
                 })}
               </SwipeableList>

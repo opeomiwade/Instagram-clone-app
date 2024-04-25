@@ -118,7 +118,7 @@ const Header: React.FC<HeaderProps> = ({
           >{`${userData.following.length} following`}</h3>
         </div>
         <h4 className="font-bold">{userData.name}</h4>
-        {mutualFollowers.length > 0 && (
+        {mutualFollowers.length > 0 && !isCurrentUser &&  (
           <h4 className="font-semibold text-sm truncate">
             <span className="text-xs text-gray-500">Followed by</span>{" "}
             {mutualFollowers.map(follower => follower).join(', ')}

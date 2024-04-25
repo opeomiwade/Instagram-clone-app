@@ -7,4 +7,4 @@ This project is a Instagram Clone Web App being built with React + Typescript, F
 - Still working on it, not complete, commits can be viewed on main branch
 
 # Installation
-- View deployed web app at https://instagram-clone-app.netlify.app/
+- View deployed web app at https://instagram-clone-5b47d.web.app/

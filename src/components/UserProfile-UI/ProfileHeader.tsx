@@ -74,7 +74,12 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex gap-[15px] items-center">
           <h2 className="font-bold text-xl">{userData.username}</h2>
           <button
-            className="bg-gray-200 text-black text-md font-semibold rounded-md w-[10rem] p-2"
+            className={`${
+              currentUser.following &&
+              !currentUser.following.includes(userData.username)
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+            } text-black text-md font-semibold rounded-md w-[10rem] p-2`}
             ref={followButtonRef as Ref<HTMLButtonElement>}
             onClick={
               isCurrentUser
@@ -116,7 +121,7 @@ const Header: React.FC<HeaderProps> = ({
         {mutualFollowers.length > 0 && (
           <h4 className="font-semibold text-sm truncate">
             <span className="text-xs text-gray-500">Followed by</span>{" "}
-            {mutualFollowers}
+            {mutualFollowers.map(follower => follower).join(', ')}
           </h4>
         )}
       </div>

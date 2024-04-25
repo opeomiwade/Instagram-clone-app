@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { currentUserActions } from "../../store/redux-store";
 import { updateDoc } from "../../util/http";
+import { motion, AnimatePresence } from "framer-motion";
 
 const List: React.FC<{
   title: string;
@@ -47,6 +48,10 @@ const List: React.FC<{
   }
 
   function followingButtonHandler(event: React.MouseEvent<HTMLButtonElement>) {
+    event.currentTarget.innerText = "Follow";
+    event.currentTarget.classList.replace("bg-gray-200", "bg-blue-500");
+    event.currentTarget.classList.replace("hover:bg-gray-300", "text-white");
+
     // Update following of current user
     dispatch(
       currentUserActions.updateUserData({
@@ -149,45 +154,63 @@ const List: React.FC<{
             onChange={changeHandler}
           />
         </div>
+
         <div className="flex flex-col gap-4 p-4">
-          {title === "Following" &&
-            followingList?.map((user) => {
-              return (
-                <div key={user.username} className="flex justify-between">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={user.profilePic}
-                      className="w-[40px] h-[40px] rounded-full"
-                    />
-                    <h4
-                      className="font-bold flex flex-col text-sm hover:cursor-pointer"
-                      onClick={() => {
-                        navigate(`/home/${user.username}`);
-                        closeModal();
-                      }}
-                    >
-                      {user.username}
-                      <span className="text-gray-600 font-normal">
-                        {user.name}
-                      </span>
-                    </h4>
-                  </div>
-                  {isCurrentUser && (
-                    <button
-                      id={user.username}
-                      className="bg-gray-200 rounded-lg font-bold text-xs max-w-[100px] w-[100px] hover:bg-gray-300"
-                      onClick={followingButtonHandler}
-                    >
-                      Following
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          {title === "Followers" &&
-            followersList?.map((user) => {
-              return (
-                <div key={user.username} className="flex justify-between">
+          {title === "Following" && (
+            <AnimatePresence>
+              {followingList?.map((user) => {
+                return (
+                  <motion.div
+                    layout // allows item to be animated smoothly when item near it is removed
+                    key={user.username}
+                    className="flex justify-between"
+                    initial={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5, delay: 1 }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={user.profilePic}
+                        className="w-[40px] h-[40px] rounded-full"
+                      />
+                      <h4
+                        className="font-bold flex flex-col text-sm hover:cursor-pointer"
+                        onClick={() => {
+                          navigate(`/home/${user.username}`);
+                          closeModal();
+                        }}
+                      >
+                        {user.username}
+                        <span className="text-gray-600 font-normal">
+                          {user.name}
+                        </span>
+                      </h4>
+                    </div>
+                    {isCurrentUser && (
+                      <button
+                        id={user.username}
+                        className={`bg-gray-200 rounded-lg font-bold text-xs max-w-[100px] w-[100px] hover:bg-gray-300`}
+                        onClick={followingButtonHandler}
+                      >
+                        Following
+                      </button>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          )}
+
+          {title === "Followers" && (
+            <AnimatePresence>
+              {followersList?.map((user) => (
+                <motion.div
+                  key={user.username}
+                  className="flex justify-between"
+                  initial={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5, delay: 1 }}
+                >
                   <div className="flex items-center gap-2">
                     <img
                       src={user.profilePic}
@@ -215,9 +238,10 @@ const List: React.FC<{
                       Remove
                     </button>
                   )}
-                </div>
-              );
-            })}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          )}
         </div>
       </div>
     </dialog>,

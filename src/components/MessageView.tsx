@@ -8,6 +8,7 @@ import { StreamChat } from "stream-chat";
 
 const Message: React.FC<{ client: StreamChat }> = ({ client }) => {
   const [smallScreen, setsmallScreen] = useState<boolean | undefined>();
+  const [sidebarHeight, setHeight] = useState<number | undefined>();
 
   const userData = useSelector(
     (state: { currentUser: { userData: userDetails } }) =>
@@ -17,10 +18,12 @@ const Message: React.FC<{ client: StreamChat }> = ({ client }) => {
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        if (entry.contentRect.width < 650) {
+        if (entry.contentRect.width < 768) {
           setsmallScreen(true);
+          setHeight(document.querySelector("aside")?.offsetHeight);
         } else {
           setsmallScreen(false);
+          setHeight(document.querySelector("aside")?.offsetHeight);
         }
       }
     });
@@ -34,23 +37,10 @@ const Message: React.FC<{ client: StreamChat }> = ({ client }) => {
   return (
     <div
       className={`${
-        smallScreen ? "flex-col ml-0" : ""
-      } flex ml-16  h-[100vh] w-full`}
+        smallScreen ? `flex-col ml-0 h-[calc(100vh-${sidebarHeight}px)]` : "ml-16 h-[100vh] "
+      } flex w-full`}
     >
       <ChatView chatClient={client} userData={userData} />
-
-      {/* {smallScreen && (
-        <div className="flex flex-col gap-8 m-4  justify-center">
-          <div className="flex justify-between w-full">
-            <ArrowBackIcon />
-            <h2 className="font-bold text-lg">{userData.username}</h2>
-            <button onClick={() => setOpen(true)}>
-              <NewChatIcon />
-            </button>
-          </div>
-          <h2 className="font-bold text-md text-center">Messages</h2>
-        </div>
-      )} */}
     </div>
   );
 };

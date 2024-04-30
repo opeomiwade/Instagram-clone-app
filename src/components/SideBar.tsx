@@ -45,7 +45,7 @@ const SideBar = () => {
         } else {
           dispatch(sidebarActions.sidebarText(true));
         }
-        if (entry.contentRect.width < 650 && selection !== "search") {
+        if (entry.contentRect.width < 768 && selection !== "search") {
           setAside(true);
         } else {
           setAside(false);
@@ -67,7 +67,7 @@ const SideBar = () => {
           : `h-[100vh] flex flex-col py-[2rem] px-2 ${
               !iconText ? "w-fit" : "w-[15%]"
             } border-solid border-r-[1px] border-gray-200 justify-between`
-      } fixed`}
+      } fixed z-20`}
     >
       {!bottomAside && (
         <img src={Instagram} alt="Instagram" style={{ width: "30px" }} />

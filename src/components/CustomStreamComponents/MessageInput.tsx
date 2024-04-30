@@ -57,7 +57,7 @@ const MessageInput: React.FC = () => {
         </div>
       )}
       <div
-        className={`flex flex-col z-20 border-[1px] border-gray-300 mb-4 ${
+        className={`flex flex-col z-10 border-[1px] border-gray-300 mb-4 ${
           Object.values(imageUploads).length > 0 ? "rounded-md" : "rounded-full"
         } w-[95%] mx-auto p-2`}
       >

@@ -218,6 +218,8 @@ const NewMessageModal: React.FC<{
                 showNewMessageModal(false);
               } else {
                 chatClickHandler && chatClickHandler(selectedUsers);
+                setSelectedUsers([])
+                setResults([])
                 dialogRef.current?.close();
                 showNewMessageModal(false);
               }

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
-// import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ChatView from "./ChatView";
 import { userDetails } from "../types/types";
 import { StreamChat } from "stream-chat";

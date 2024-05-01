@@ -5,7 +5,7 @@ import { postDetails, userDetails } from "../types/types";
 import { useQuery } from "@tanstack/react-query";
 import queryClient, { getPosts, updateDoc } from "../util/http";
 import { useSelector, useDispatch } from "react-redux";
-import { allPostsActions } from "../store/redux-store";
+import { allPostsActions, newMessageModalActions } from "../store/redux-store";
 import { CircularProgress } from "@mui/material";
 import { motion } from "framer-motion";
 import NewMessageModal from "./Modals/NewMessageModal";
@@ -22,7 +22,6 @@ function Feed() {
     (state: { currentUser: { userData: { [key: string]: any } } }) =>
       state.currentUser.userData
   );
-  const [open, setOpenNewMessageModal] = useState<boolean>();
   const [suggestions, setSuggestions] = useState<userDetails[]>();
   const [showSuggestions, setShow] = useState<boolean>(true);
 
@@ -90,18 +89,17 @@ function Feed() {
       });
   }, [data, isSuccess, currentUser.archivedPosts]);
 
-  function showModal(value: boolean) {
-    setOpenNewMessageModal(value);
+  function closeNewMessageModal() {
+    dispatch(newMessageModalActions.closeModal());
   }
 
   return (
     <>
       <NewMessageModal
         modalTitle="Share"
-        open={open!}
-        showNewMessageModal={showModal}
+        closeNewMessageModal={closeNewMessageModal}
       />
-      <PostModal showNewMessageModal={showModal} />
+      <PostModal />
       <div className="flex justify-between mx-auto">
         <div
           className={`flex flex-col ${
@@ -131,13 +129,7 @@ function Feed() {
             <CircularProgress />
           ) : posts.length > 0 ? (
             posts.map((post) => {
-              return (
-                <Post
-                  key={post.id}
-                  post={post}
-                  showNewMessageModal={showModal}
-                />
-              );
+              return <Post key={post.id} post={post} />;
             })
           ) : (
             <h1 className="font-bold text-2xl h-[100vh] items-center justify-center">

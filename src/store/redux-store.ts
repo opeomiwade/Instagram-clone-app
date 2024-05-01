@@ -158,6 +158,7 @@ const currentUserSlice = createSlice({
             }
           );
           break;
+
         default:
           state.userData = { ...state.userData, ...action.payload.userData };
           break;
@@ -244,6 +245,19 @@ const recentSearches = createSlice({
   },
 });
 
+const newMessageModal = createSlice({
+  name: "new message",
+  initialState: { open: false },
+  reducers: {
+    openModal(state) {
+      state.open = true;
+    },
+    closeModal(state) {
+      state.open = false;
+    },
+  },
+});
+
 const store = configureStore({
   reducer: {
     currentPost: currentPostSlice.reducer,
@@ -251,6 +265,7 @@ const store = configureStore({
     currentUser: currentUserSlice.reducer,
     allPosts: allPosts.reducer,
     recents: recentSearches.reducer,
+    newMessageModal: newMessageModal.reducer,
   },
 });
 
@@ -260,3 +275,4 @@ export const sidebarActions = sideBarSlice.actions;
 export const currentUserActions = currentUserSlice.actions;
 export const allPostsActions = allPosts.actions;
 export const recentsActions = recentSearches.actions;
+export const newMessageModalActions = newMessageModal.actions;

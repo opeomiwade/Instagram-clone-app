@@ -100,7 +100,13 @@ const Header: React.FC<HeaderProps> = ({
             className={`bg-gray-200 ${
               isCurrentUser ? "text-red-500" : "text-black"
             } text-md font-semibold rounded-md p-2 w-[7rem]`}
-            onClick={isCurrentUser ? logOutHandler : () => {}}
+            onClick={
+              isCurrentUser
+                ? logOutHandler
+                : () => {
+                    navigate("/home/messages");
+                  }
+            }
           >
             {isCurrentUser ? "Log Out" : "Message"}
           </button>
@@ -118,10 +124,10 @@ const Header: React.FC<HeaderProps> = ({
           >{`${userData.following.length} following`}</h3>
         </div>
         <h4 className="font-bold">{userData.name}</h4>
-        {mutualFollowers.length > 0 && !isCurrentUser &&  (
+        {mutualFollowers.length > 0 && !isCurrentUser && (
           <h4 className="font-semibold text-sm truncate">
             <span className="text-xs text-gray-500">Followed by</span>{" "}
-            {mutualFollowers.map(follower => follower).join(', ')}
+            {mutualFollowers.map((follower) => follower).join(", ")}
           </h4>
         )}
       </div>

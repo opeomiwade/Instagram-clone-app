@@ -13,17 +13,20 @@ import { sharePost } from "../../util/http";
 import PostContext from "../../context/PostContext";
 
 const NewMessageModal: React.FC<{
-  open: boolean;
   modalTitle?: string;
-  showNewMessageModal: (value: boolean) => void;
+  closeNewMessageModal: () => void;
   chatClickHandler?: (selectedUsers: userDetails[]) => void;
-}> = ({ open, showNewMessageModal, chatClickHandler, modalTitle }) => {
+}> = ({ closeNewMessageModal, chatClickHandler, modalTitle }) => {
   const dialogRef = useRef<HTMLDialogElement>();
   const inputRef = useRef<HTMLInputElement>();
   const [searchResults, setResults] = useState<userDetails[]>();
   const [selectedUsers, setSelectedUsers] = useState<userDetails[]>([]);
   const [disabled, setDisabled] = useState<boolean>(true);
   const [showErrorDiv, setShow] = useState<boolean>();
+  const open = useSelector(
+    (state: { newMessageModal: { open: boolean } }) =>
+      state.newMessageModal.open
+  );
   const userData = useSelector(
     (state: { currentUser: { userData: { [key: string]: any } } }) =>
       state.currentUser.userData
@@ -108,8 +111,8 @@ const NewMessageModal: React.FC<{
       className={`${classes.modal} ${open && "flex"} !z-50`}
       ref={dialogRef as React.Ref<HTMLDialogElement>}
       onClose={() => {
-        messageInputRef.current!.value = "";
-        inputRef.current!.value = "";
+        messageInputRef.current && (messageInputRef.current.value = "");
+        inputRef.current && (inputRef.current.value = "");
         setResults([]);
         setSelectedUsers([]);
       }}
@@ -123,7 +126,7 @@ const NewMessageModal: React.FC<{
             className="relative left-2 hover:cursor-pointer"
             onClick={() => {
               dialogRef.current?.close();
-              showNewMessageModal(false);
+              closeNewMessageModal();
             }}
           >
             <CloseIcon style={{ fontSize: "2rem" }} />
@@ -215,13 +218,13 @@ const NewMessageModal: React.FC<{
                   messageInputRef.current?.value
                 );
                 setPostToShare({} as postDetails);
-                showNewMessageModal(false);
+                closeNewMessageModal();
               } else {
                 chatClickHandler && chatClickHandler(selectedUsers);
-                setSelectedUsers([])
-                setResults([])
+                setSelectedUsers([]);
+                setResults([]);
                 dialogRef.current?.close();
-                showNewMessageModal(false);
+                closeNewMessageModal();
               }
             }}
           >

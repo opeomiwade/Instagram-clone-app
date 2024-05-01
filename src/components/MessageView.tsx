@@ -36,8 +36,8 @@ const Message: React.FC<{ client: StreamChat }> = ({ client }) => {
   return (
     <div
       className={`${
-        smallScreen ? `flex-col ml-0 h-[calc(100vh-${sidebarHeight}px)]` : "ml-16 h-[100vh] "
-      } flex w-full`}
+        smallScreen ? `  h-[calc(100vh-${sidebarHeight}px)] flex-col ml-0 ` : "ml-16 h-[100vh] "
+      } flex w-full `}
     >
       <ChatView chatClient={client} userData={userData} />
     </div>

@@ -7,17 +7,17 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { motion } from "framer-motion";
 import { postDetails } from "../types/types";
 import { useDispatch, useSelector } from "react-redux";
-import { currentPostActions } from "../store/redux-store";
+import {
+  currentPostActions,
+  newMessageModalActions,
+} from "../store/redux-store";
 import { updatePost } from "../util/http";
 import CommentInput from "./CommentInput";
 import PostContext from "../context/PostContext";
 import image from "../assets/account circle.jpeg";
 import MoreDropDown from "./MoreDropdown";
 
-const Post: React.FC<{
-  post: postDetails;
-  showNewMessageModal?: (value: boolean) => void;
-}> = ({ post, showNewMessageModal }) => {
+const Post: React.FC<{ post: postDetails }> = ({ post }) => {
   const dispatch = useDispatch();
   const dialog = useRef<HTMLDialogElement>();
   const [comment, setNewComment] = useState<string>("");
@@ -120,7 +120,7 @@ const Post: React.FC<{
             id="send"
             className="hover:cursor-pointer"
             onClick={() => {
-              showNewMessageModal && showNewMessageModal(true);
+              dispatch(newMessageModalActions.openModal());
               setPostToShare(post);
             }}
           >

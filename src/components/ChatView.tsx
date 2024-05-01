@@ -15,10 +15,10 @@ import ChannelHeader from "./CustomStreamComponents/ChannelHeader";
 import "stream-chat-react/dist/css/index.css";
 import "../CSS/stream-chat-message.css";
 import CustomChannelList from "./CustomStreamComponents/CustomChannelList";
-import EmptyPlaceHolder from "./CustomStreamComponents/EmptyPlaceHolder";
 import CustomDateSeparator from "./CustomStreamComponents/CustomDateSeparator";
 import CustomChannelPreview from "./CustomStreamComponents/CustomChannelPreview";
-import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { newMessageModalActions } from "../store/redux-store";
 
 const ChatView: React.FC<{
   chatClient: StreamChat;
@@ -27,41 +27,24 @@ const ChatView: React.FC<{
   const { username } = userData;
   const filters = { members: { $in: [username] }, type: "messaging" };
   const options = { presence: true, state: true };
-  const [smallScreen, setSmallScreen] = useState<boolean>();
-  const emptyPlaceHolder = !smallScreen ? EmptyPlaceHolder : <></>;
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.contentRect.width < 768) {
-          setSmallScreen(true);
-        } else {
-          setSmallScreen(false);
-        }
-      }
-    });
-    resizeObserver.observe(document.documentElement);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  });
-
-  useEffect(() => {
-    if (smallScreen) {
-      document
-        .querySelector(
-          ".str-chat.str-chat-channel.str-chat__channel > .str-chat__container"
-        )
-        ?.classList.add("smallChatView");
-    } else {
-      document
-        .querySelector(
-          ".str-chat.str-chat-channel.str-chat__channel > .str-chat__container"
-        )
-        ?.classList.remove("smallChatView");
-    }
-  }, [smallScreen]);
+  const emptyPlaceHolder = (
+    <div className="h-full flex flex-col gap-4 items-center justify-center ">
+      <h2 className="font-bold text-xl">Your Messages</h2>
+      <p className="text-gray-400 text-xs">
+        Send messages and pictures to friend{" "}
+      </p>
+      <button
+        className="bg-blue-500 p-2 rounded-lg text-white font-semibold text-sm "
+        onClick={() => {
+          dispatch(newMessageModalActions.openModal());
+        }}
+      >
+        Send a message
+      </button>
+    </div>
+  );
 
   return (
     <div className="w-full">

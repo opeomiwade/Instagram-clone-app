@@ -9,7 +9,10 @@ import BookmarkIcon from "@mui/icons-material/BookmarkOutlined";
 import classes from "../../CSS/Modal.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { postDetails } from "../../types/types";
-import { currentPostActions } from "../../store/redux-store";
+import {
+  currentPostActions,
+  newMessageModalActions,
+} from "../../store/redux-store";
 import { useState, useContext } from "react";
 import CommentInput from "../CommentInput";
 import PostContext from "../../context/PostContext";
@@ -26,10 +29,9 @@ import {
 import "react-swipeable-list/dist/styles.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const PostDialog: React.FC<{
-  isCurrentUser?: boolean;
-  showNewMessageModal?: (value: boolean) => void;
-}> = ({ isCurrentUser, showNewMessageModal }) => {
+const PostDialog: React.FC<{ isCurrentUser?: boolean }> = ({
+  isCurrentUser,
+}) => {
   const dialog = useRef<HTMLDialogElement>();
   const [showEmojiPicker, setPicker] = useState<boolean>(false);
   const [comment, setNewComment] = useState<string>("");
@@ -242,7 +244,7 @@ const PostDialog: React.FC<{
               <button
                 className="hover:cursor-pointer"
                 onClick={() => {
-                  showNewMessageModal && showNewMessageModal(true);
+                  dispatch(newMessageModalActions.openModal());
                   ctx.setPostToShare(post);
                 }}
               >

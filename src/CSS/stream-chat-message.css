@@ -30,6 +30,6 @@
 }
 
 .smallChatView {
-  height: calc(611px) !important;
+  height: calc(100vh - 81px) !important;
   overflow-y: auto;
 }

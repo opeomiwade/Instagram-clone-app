@@ -78,9 +78,13 @@ export async function action({ request }: { request: Request }) {
   }
 }
 
-export function loader() {
+export async function loader() {
   if (localStorage.getItem("accessToken")) {
     localStorage.removeItem("accessToken");
   }
+  if (localStorage.getItem("streamAccessToken")) {
+    localStorage.removeItem("streamAccessToken");
+  }
+  await axios.post("https://instagram-clone-app-server.onrender.com/sign-out");
   return null;
 }

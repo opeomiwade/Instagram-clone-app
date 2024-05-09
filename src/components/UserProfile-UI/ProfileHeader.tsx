@@ -62,7 +62,7 @@ const Header: React.FC<HeaderProps> = ({
   }
 
   return (
-    <header className="flex  justify-center p-6 gap-[100px]">
+    <header className="flex justify-center p-6 gap-[100px]">
       <img
         onClick={() => {
           openProfileImageModal();
@@ -79,7 +79,7 @@ const Header: React.FC<HeaderProps> = ({
               !currentUser.following.includes(userData.username)
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200"
-            } text-black text-md font-semibold rounded-md w-[10rem] p-2`}
+            } text-black md:text-md font-semibold rounded-md md:w-[10rem] p-2`}
             ref={followButtonRef as Ref<HTMLButtonElement>}
             onClick={
               isCurrentUser
@@ -99,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({
           <button
             className={`bg-gray-200 ${
               isCurrentUser ? "text-red-500" : "text-black"
-            } text-md font-semibold rounded-md p-2 w-[7rem]`}
+            } text-md font-semibold rounded-md p-2 md:w-[7rem]`}
             onClick={
               isCurrentUser
                 ? logOutHandler
@@ -112,7 +112,7 @@ const Header: React.FC<HeaderProps> = ({
           </button>
         </div>
 
-        <div className="flex justify-between ">
+        <div className="flex md:justify-between gap-4">
           <h3 className="font-bold">{`${userData.posts.length} posts`}</h3>
           <h3
             className="font-bold hover:cursor-pointer"

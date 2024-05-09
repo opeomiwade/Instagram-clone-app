@@ -16,7 +16,7 @@ const Content: React.FC<{ posts: postDetails[] }> = ({ posts }) => {
           >
             <img
               src={post.imageUrl}
-              className="h-[300px] w-full hover:cursor-pointer"
+              className="md:h-[300px] w-full hover:cursor-pointer"
             />
           </div>
         );

@@ -38,7 +38,7 @@ const MessageInput: React.FC = () => {
 
   function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setOpen(false) // close emoji picker when user sends message
+    setOpen(false); // close emoji picker when user sends message
     handleSubmit(event);
   }
 
@@ -61,10 +61,9 @@ const MessageInput: React.FC = () => {
           Object.values(imageUploads).length > 0 ? "rounded-md" : "rounded-full"
         } w-[95%] mx-auto p-2`}
       >
-        <div className="flex">
-          {Object.values(imageUploads).length > 0 &&
-            Object.values(imageUploads).map((image) => {
-              console.log(image);
+        {Object.values(imageUploads).length > 0 && (
+          <div className="flex items-center">
+            {Object.values(imageUploads).map((image) => {
               return (
                 <div className="relative hover:cursor-pointer">
                   <div
@@ -84,7 +83,25 @@ const MessageInput: React.FC = () => {
                 </div>
               );
             })}
-        </div>
+            <button
+              className="hover:cursor-pointer"
+              onClick={() => {
+                fileInputRef.current?.click();
+              }}
+              type="button"
+            >
+              <ImageIcon
+                style={{
+                  fill: "white",
+                  stroke: "gray",
+                  width: "50px",
+                  height: "50px",
+                  strokeWidth: "1px",
+                }}
+              />
+            </button>
+          </div>
+        )}
 
         <form
           onSubmit={handleFormSubmit}

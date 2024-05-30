@@ -4,6 +4,7 @@ import CreateModal from "../components/Create";
 import { useSelector } from "react-redux";
 import Search from "../components/SearchSideBar";
 import { AnimatePresence } from "framer-motion";
+import { SearchContextProvider } from "../context/SearchContext";
 
 function Root() {
   const sidebarState = useSelector(
@@ -16,7 +17,11 @@ function Root() {
       <CreateModal />
       <SideBar />
       <AnimatePresence>
-        {sidebarState === "search" && <Search />}
+        {sidebarState === "search" && (
+          <SearchContextProvider>
+            <Search />
+          </SearchContextProvider>
+        )}
       </AnimatePresence>
       <Outlet />
     </div>

@@ -11,6 +11,7 @@ import { useNavigate } from "react-router";
 import { recentsActions, sidebarActions } from "../store/redux-store";
 import { useSelector, useDispatch } from "react-redux";
 import image from "../assets/account circle.jpeg";
+import { motion } from "framer-motion";
 
 const SideBar = () => {
   const getIconStyle = (iconName: string) => ({
@@ -19,8 +20,7 @@ const SideBar = () => {
     fill: selection === iconName ? "black" : "none",
     fontSize: "30px",
   });
-  // const [iconText, setVisible] = useState<boolean | undefined>();
-  const [bottomAside, setAside] = useState<boolean | undefined>();
+  const [bottomNavBar, setBottom] = useState<boolean | undefined>();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const selection = useSelector(
@@ -38,7 +38,7 @@ const SideBar = () => {
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        if (entry.contentRect.width < 920 && selection !== "search") {
+        if (entry.contentRect.width < 920) {
           dispatch(sidebarActions.sidebarText(false));
         } else if (selection === "search" || selection === "messages") {
           dispatch(sidebarActions.sidebarText(false));
@@ -46,35 +46,40 @@ const SideBar = () => {
           dispatch(sidebarActions.sidebarText(true));
         }
         if (entry.contentRect.width < 768 && selection !== "search") {
-          setAside(true);
+          setBottom(true);
         } else {
-          setAside(false);
+          setBottom(false);
         }
       }
     });
     resizeObserver.observe(document.documentElement);
 
-    return () =>{
-      resizeObserver.disconnect()
-    }
+    return () => {
+      resizeObserver.disconnect();
+    };
   }, [selection]);
 
   return (
-    <aside
+    <motion.aside
+      initial={{ x: -200, opacity: 0 }}
+      animate={{
+        x: 0,
+        opacity: 1,
+        width: !bottomNavBar ? (!iconText ? "fit-content" : "15%") : "",
+      }}
+      transition={{ duration: 0.2, ease: "easeIn" }}
       className={`${
-        bottomAside
+        bottomNavBar
           ? classes.bottomAside
-          : `h-[100vh] flex flex-col py-[2rem] px-2 ${
-              !iconText ? "w-fit" : "w-[15%]"
-            } border-solid border-r-[1px] border-gray-200 justify-between`
+          : `h-[100vh] flex flex-col py-[2rem] px-2 border-solid border-r-[1px] border-gray-200 justify-between`
       } fixed z-20`}
     >
-      {!bottomAside && (
+      {!bottomNavBar && (
         <img src={Instagram} alt="Instagram" style={{ width: "30px" }} />
       )}
       <div
         className={` flex  items-start ${
-          bottomAside
+          bottomNavBar
             ? "w-[100%] flex-row justify-around"
             : "h-[80%] flex-col gap-[50px]"
         }`}
@@ -85,7 +90,7 @@ const SideBar = () => {
             navigate("");
           }}
           className={`${
-            !bottomAside && "w-[100%]"
+            !bottomNavBar && "w-[100%]"
           } p-2 flex items-start hover:bg-gray-200 rounded-md cursor-pointer`}
         >
           <HomeIcon style={getIconStyle("home")} />
@@ -100,13 +105,13 @@ const SideBar = () => {
             </a>
           )}
         </button>
-        {!bottomAside && (
+        {!bottomNavBar && (
           <button
             onClick={() => {
               dispatch(sidebarActions.updateSidebarState("search"));
             }}
             className={`${
-              !bottomAside && "w-[100%]"
+              !bottomNavBar && "w-[100%]"
             } p-2 flex items-start hover:bg-gray-200 rounded-md cursor-pointer`}
           >
             <SearchIcon style={getIconStyle("search")} />
@@ -128,7 +133,7 @@ const SideBar = () => {
             navigate("messages");
           }}
           className={`${
-            !bottomAside && "w-[100%]"
+            !bottomNavBar && "w-[100%]"
           } p-2 flex items-start hover:bg-gray-200 rounded-md cursor-pointer`}
         >
           <TelegramIcon style={getIconStyle("messages")} />
@@ -148,7 +153,7 @@ const SideBar = () => {
             dispatch(sidebarActions.updateSidebarState("create"));
           }}
           className={`${
-            !bottomAside && "w-[100%]"
+            !bottomNavBar && "w-[100%]"
           } p-2 flex items-start hover:bg-gray-200 rounded-md cursor-pointer`}
         >
           <AddBoxIcon
@@ -167,7 +172,7 @@ const SideBar = () => {
             navigate(userData.username);
           }}
           className={`${
-            !bottomAside && "w-[100%]"
+            !bottomNavBar && "w-[100%]"
           } p-2 flex items-start hover:bg-gray-200 rounded-md cursor-pointer`}
         >
           <img
@@ -191,14 +196,16 @@ const SideBar = () => {
       <div>
         <button
           className={`${
-            !bottomAside && "w-[100%]"
+            !bottomNavBar && "w-[100%]"
           } p-2 flex items-start hover:bg-gray-200 rounded-md cursor-pointer`}
           onClick={async () => {
             dispatch(sidebarActions.updateSidebarState("home"));
-            dispatch(recentsActions.clear())
+            dispatch(recentsActions.clear());
             localStorage.removeItem("accessToken");
-            localStorage.removeItem("streamAccessToken")
-            await axios.post("https://instagram-clone-app-server.onrender.com/sign-out");
+            localStorage.removeItem("streamAccessToken");
+            await axios.post(
+              "https://instagram-clone-app-server.onrender.com/sign-out"
+            );
             navigate("/");
           }}
         >
@@ -213,7 +220,7 @@ const SideBar = () => {
           {iconText && <a style={{ paddingLeft: "15px" }}>Log Out</a>}
         </button>
       </div>
-    </aside>
+    </motion.aside>
   );
 };
 

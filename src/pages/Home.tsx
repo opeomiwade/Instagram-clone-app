@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { currentUserActions, sidebarActions } from "../store/redux-store";
 import { useEffect } from "react";
 import { PostContextProvider } from "../context/PostContext";
+import { SearchContextProvider } from "../context/SearchContext";
 
 function Home() {
   const currentUserData = useLoaderData() as {
@@ -20,7 +21,9 @@ function Home() {
 
   return (
     <PostContextProvider>
-      <Feed />
+      <SearchContextProvider>
+        <Feed />
+      </SearchContextProvider>
     </PostContextProvider>
   );
 }

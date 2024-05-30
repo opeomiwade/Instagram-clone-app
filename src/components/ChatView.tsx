@@ -47,7 +47,9 @@ const ChatView: React.FC<{
   );
 
   return (
-    <div className="w-full">
+    <div
+      className="w-full"
+    >
       <Chat client={chatClient} theme="">
         <ChannelList
           List={CustomChannelList}

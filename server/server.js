@@ -202,7 +202,6 @@ app.post("/forgot-password", async (req, res) => {
       await signInWithEmailAndPassword(auth, email, password)
     ).user;
     await updatePassword(user, newpassword);
-    console.log(newpassword);
     const updatedEncryptedPassword = await encryptPassword(
       newpassword,
       userData[0].username

@@ -1,3 +1,4 @@
+"use client"
 import LoginForm from "../components/Forms/LoginForm";
 import classes from "../CSS/AuthPage.module.css";
 import Footer from "../components/Footer";
@@ -11,15 +12,15 @@ export type errorObj = { isError: boolean; message: string };
 
 function LoginPage() {
   const error: errorObj = useActionData() as errorObj;
-  const [imageVisible, setIsVisisble] = useState<boolean>(true);
+  const [imageVisible, setIsVisible] = useState<boolean>(true);
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         if (entry.contentRect.width < 860) {
-          setIsVisisble(false);
+          setIsVisible(false);
         } else {
-          setIsVisisble(true);
+          setIsVisible(true);
         }
       }
     });

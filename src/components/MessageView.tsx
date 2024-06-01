@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, lazy } from "react";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
-import ChatView from "./ChatView";
 import { userDetails } from "../types/types";
 import { StreamChat } from "stream-chat";
 import { AnimatePresence, motion } from "framer-motion";
+
+const ChatView = lazy(() => import("./ChatView"));
 
 const Message: React.FC<{ client: StreamChat }> = ({ client }) => {
   const [smallScreen, setsmallScreen] = useState<boolean | undefined>();

@@ -1,10 +1,11 @@
-import { useEffect } from "react";
-import Message from "../components/MessageView";
+import { lazy, useEffect } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { currentUserActions, sidebarActions } from "../store/redux-store";
 import { useLoaderData, redirect } from "react-router";
 import { StreamChat } from "stream-chat";
+
+const Message = lazy(() => import("../components/MessageView"))
 
 function MessagesPage() {
   const { userData, chatClient } = useLoaderData() as { [key: string]: any };

@@ -1,4 +1,3 @@
-"use client"
 import LoginForm from "../components/Forms/LoginForm";
 import classes from "../CSS/AuthPage.module.css";
 import Footer from "../components/Footer";

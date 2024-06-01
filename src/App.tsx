@@ -1,48 +1,158 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import { action as loginAction } from "./pages/LoginPage";
-import { action as signupAction } from "./pages/SignupPage";
-import HomePage, { loader as checkAuth } from "./pages/Home";
-import { loader as removeAuth } from "./pages/LoginPage";
-import ProfilePage, { loader as profileLoader } from "./pages/ProfilePage";
-import Root from "./layouts/Root";
-import ErrorPage from "./components/ErrorPage";
-import ForgotPasswordPage, {
-  action as forgotpass,
-} from "./pages/ForgotPasswordPage";
-import MessagesPage, { loader as messagesLoader } from "./pages/MessagesPage";
-import PostPage, { loader as postLoader } from "./pages/PostPage";
+import { lazy, Suspense } from "react";
+import { CircularProgress } from "@mui/material";
+
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const SignupPage = lazy(() => import("./pages/SignupPage"));
+const HomePage = lazy(() => import("./pages/Home"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const ErrorPage = lazy(() => import("./components/ErrorPage"));
+const Root = lazy(() => import("./layouts/Root"));
+const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
+const MessagesPage = lazy(() => import("./pages/MessagesPage"));
+const PostPage = lazy(() => import("./pages/PostPage"));
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <LoginPage />,
+      element: (
+        <Suspense
+          fallback={
+            <div className="flex h-screen justify-center items-center">
+              <CircularProgress />
+            </div>
+          }
+        >
+          <LoginPage />
+        </Suspense>
+      ),
       errorElement: <ErrorPage />,
-      action: loginAction,
-      loader: removeAuth,
+      action: async (args) => {
+        const module = await import("./pages/LoginPage");
+        return module.action(args);
+      },
+      loader: async () => {
+        const module = await import("./pages/LoginPage");
+        return module.loader();
+      },
     },
-    { path: "/signup", element: <SignupPage />, action: signupAction },
+    {
+      path: "/signup",
+      element: (
+        <Suspense
+          fallback={
+            <div className="flex h-screen justify-center items-center">
+              <CircularProgress />
+            </div>
+          }
+        >
+          <SignupPage />
+        </Suspense>
+      ),
+      action: async (args) => {
+        const module = await import("./pages/SignupPage");
+        return module.action(args);
+      },
+    },
     {
       path: "/forgot-password",
-      element: <ForgotPasswordPage />,
-      action: forgotpass,
+      element: (
+        <Suspense
+          fallback={
+            <div className="flex h-screen justify-center items-center">
+              <CircularProgress />
+            </div>
+          }
+        >
+          <ForgotPasswordPage />
+        </Suspense>
+      ),
+      action: async (args) => {
+        const module = await import("./pages/ForgotPasswordPage");
+        return module.action(args);
+      },
     },
     {
       path: "/p/:postId",
-      element: <PostPage />,
-      errorElement:<ErrorPage/>,
-      loader: postLoader,
+      element: (
+        <Suspense
+          fallback={
+            <div className="flex h-screen justify-center items-center">
+              <CircularProgress />
+            </div>
+          }
+        >
+          <PostPage />
+        </Suspense>
+      ),
+      errorElement: <ErrorPage />,
+      loader: async (args) => {
+        const module = await import("./pages/PostPage");
+        return module.loader(args);
+      },
     },
     {
       path: "/home",
-      element: <Root />,
+      element: (
+          <Root />
+      ),
       errorElement: <ErrorPage />,
       children: [
-        { index: true, element: <HomePage />, loader: checkAuth },
-        { path: ":username", element: <ProfilePage />, loader: profileLoader },
-        { path: "messages", element: <MessagesPage />, loader: messagesLoader },
+        {
+          index: true,
+          element: (
+            <Suspense
+              fallback={
+                <div className="flex h-screen justify-center items-center">
+                  <CircularProgress />
+                </div>
+              }
+            >
+              <HomePage />
+            </Suspense>
+          ),
+          loader: async () => {
+            const module = await import("./pages/Home");
+            return module.loader();
+          },
+        },
+        {
+          path: ":username",
+          element: (
+            <Suspense
+              fallback={
+                <div className="flex h-screen justify-center items-center">
+                  <CircularProgress />
+                </div>
+              }
+            >
+              <ProfilePage />
+            </Suspense>
+          ),
+          loader: async (args) => {
+            const module = await import("./pages/ProfilePage");
+            return module.loader(args);
+          },
+        },
+        {
+          path: "messages",
+          element: (
+            <Suspense
+              fallback={
+                <div className="flex h-screen justify-center items-center">
+                  <CircularProgress />
+                </div>
+              }
+            >
+              <MessagesPage />
+            </Suspense>
+          ),
+          loader: async () => {
+            const module = await import("./pages/MessagesPage");
+            return module.loader();
+          },
+        },
       ],
     },
   ]);

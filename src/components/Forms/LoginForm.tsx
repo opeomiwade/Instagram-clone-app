@@ -2,7 +2,7 @@ import { Form } from "react-router-dom";
 import Input from "../Input";
 import { useNavigation, Link } from "react-router-dom";
 import { useState, useRef } from "react";
-import { errorObj } from "../../pages/LoginPage";
+import { errorObj } from "../../types/types";
 
 const AuthForm: React.FC<{ error: errorObj }> = ({ error }) => {
   const [disabled, setdisabled] = useState<boolean>(true);

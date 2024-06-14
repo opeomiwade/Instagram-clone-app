@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import Input from "./Input";
 import classes from "../CSS/AuthPage.module.css";
+import { FaCameraRetro } from "react-icons/fa6";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -17,21 +18,19 @@ const ForgotPassword = () => {
     const timer = setTimeout(() => {
       if (formInput.new !== formInput.confirm) {
         setMatch(false);
-      }
-      else{
-        setMatch(true)
+      } else {
+        setMatch(true);
       }
     }, 500);
     if (
       passwordMatch &&
-      (formInput.email.trim() !== "" &&
+      formInput.email.trim() !== "" &&
       formInput.new.trim() !== "" &&
-      formInput.confirm.trim() !== "")
+      formInput.confirm.trim() !== ""
     ) {
       setDisabled(false);
-    }
-    else{
-      setDisabled(true)
+    } else {
+      setDisabled(true);
     }
 
     return () => {
@@ -49,7 +48,10 @@ const ForgotPassword = () => {
   return (
     <div className="flex flex-col items-center mt-[3rem]">
       <div className={classes.cardDiv}>
-        <i className={classes.background} />
+        <div className="flex items-center gap-2 text-5xl mb-4 shadows-into-light-regular">
+          <FaCameraRetro size={50} />
+          IG-Clone
+        </div>
         <p className="font-medium m-2 text-center text-gray-500">
           Enter New Password
         </p>

@@ -1,13 +1,13 @@
 import LoginForm from "../components/Forms/LoginForm";
 import classes from "../CSS/AuthPage.module.css";
 import Footer from "../components/Footer";
-import screenshot1 from "../assets/screenshot1-2x.png";
-import screenshot2 from "../assets/screenshot2-2x.png";
+import { FaCameraRetro as Camera } from "react-icons/fa6";
 import { json, redirect, useActionData, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { handleFirebaseAuthAPIError } from "../util/http";
-export type errorObj = { isError: boolean; message: string };
+import { FaCameraRetro } from "react-icons/fa";
+import { errorObj } from "../types/types";
 
 function LoginPage() {
   const error: errorObj = useActionData() as errorObj;
@@ -28,17 +28,19 @@ function LoginPage() {
 
   return (
     <>
-      <div className="flex flex-row items-center gap-[3rem] justify-center mt-[3rem]">
+      <div className="flex flex-row items-center gap-[5rem] justify-center mt-[8rem] h-full">
         {imageVisible && (
           <div className={`${classes.imgDiv}`}>
-            <img className={classes.iphoneFrame} src={screenshot1} />
-            <img className={classes.iphoneFrame} src={screenshot2} />
+            <Camera size={400}/>
           </div>
         )}
 
         <div>
           <div className={classes.cardDiv}>
-            <i className={classes.background} />
+            <div className="flex items-center gap-2 text-5xl mb-4 shadows-into-light-regular">
+              <FaCameraRetro size={50} />
+              IG-Clone
+            </div>{" "}
             <LoginForm error={error} />
           </div>
           <div className={`${classes.cardDiv} mt-[10px]`}>

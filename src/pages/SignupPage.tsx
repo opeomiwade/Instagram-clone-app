@@ -2,7 +2,7 @@ import SignupForm from "../components/Forms/SignupForm";
 import Footer from "../components/Footer";
 import axios, { AxiosResponse } from "axios";
 import { useActionData, json, redirect } from "react-router";
-import { errorObj } from "./LoginPage";
+import { errorObj } from "../types/types";
 import { handleFirebaseAuthAPIError } from "../util/http";
 
 

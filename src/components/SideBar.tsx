@@ -3,7 +3,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import LogoutIcon from "@mui/icons-material/Logout";
-import Instagram from "../assets/icons/instaicon.svg";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import classes from "../CSS/SideBar.module.css";
@@ -12,6 +11,7 @@ import { recentsActions, sidebarActions } from "../store/redux-store";
 import { useSelector, useDispatch } from "react-redux";
 import image from "../assets/account circle.jpeg";
 import { motion } from "framer-motion";
+import { FaCameraRetro } from "react-icons/fa";
 
 const SideBar = () => {
   const getIconStyle = (iconName: string) => ({
@@ -74,9 +74,7 @@ const SideBar = () => {
           : `h-[100vh] flex flex-col py-[2rem] px-2 border-solid border-r-[1px] border-gray-200 justify-between`
       } fixed z-20`}
     >
-      {!bottomNavBar && (
-        <img src={Instagram} alt="Instagram" style={{ width: "30px" }} />
-      )}
+      {!bottomNavBar && <FaCameraRetro size={50} className="mx-auto" />}
       <div
         className={` flex  items-start ${
           bottomNavBar

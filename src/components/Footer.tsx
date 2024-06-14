@@ -18,9 +18,14 @@ function Footer() {
           <a className="nav-link px-2 text-body-secondary">About</a>
         </li>
       </ul>
-      <p className="text-center text-body-secondary">
-        © 2024 Created by Ope Omiwade
-      </p>
+      <div className="flex flex-col gap-2">
+        <p className="text-center text-body-secondary">
+          © 2024 Created by Ope Omiwade
+        </p>
+        <p className="text-center text-body-secondary font-bold">
+          THIS IS NOT INSTAGRAM.THIS IS A CLONE CREATED FOR PRACTICE PURPOSES.
+        </p>
+      </div>
     </footer>
   );
 }

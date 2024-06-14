@@ -70,6 +70,8 @@ export type HeaderProps = {
   isCurrentUser: boolean;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   currentUser: { [key: string]: any };
-  openArchiveModal: () => void
-  openProfileImageModal: () => void
+  openArchiveModal: () => void;
+  openProfileImageModal: () => void;
 };
+
+export type errorObj = { isError: boolean; message: string };

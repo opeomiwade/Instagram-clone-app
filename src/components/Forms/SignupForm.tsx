@@ -3,7 +3,8 @@ import { Form, Link } from "react-router-dom";
 import Input from "../Input";
 import classes from "../../CSS/AuthPage.module.css";
 import { useNavigation } from "react-router-dom";
-import { errorObj } from "../../pages/LoginPage";
+import { errorObj } from "../../types/types";
+import { FaCameraRetro } from "react-icons/fa";
 
 const SignupForm: React.FC<{ error: errorObj }> = ({ error }) => {
   const [disabled, setDisabled] = useState<boolean>(true);
@@ -28,7 +29,10 @@ const SignupForm: React.FC<{ error: errorObj }> = ({ error }) => {
   return (
     <div className="flex flex-col items-center mt-[3rem]">
       <div className={classes.cardDiv}>
-        <i className={classes.background} />
+        <div className="flex items-center gap-2 text-5xl mb-4 shadows-into-light-regular">
+          <FaCameraRetro size={50} />
+          IG-Clone
+        </div>
         <p className="font-medium m-2 text-center text-gray-500">
           Fill in the form below to create an account
         </p>

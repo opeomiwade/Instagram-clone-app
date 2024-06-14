@@ -8,3 +8,6 @@ This project is a Instagram Clone Web App being built with React + Typescript, F
 
 # Installation
 - View deployed web app at https://instagram-clone-5b47d.web.app/
+  OR
+- clone repository using `git clone https://github.com/opeomiwade/Instagram-clone-app.git`
+- navigate to project diretory and use the command `npm run dev` 

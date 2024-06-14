@@ -4,13 +4,13 @@ import InsertPhotoOutlinedIcon from "@mui/icons-material/InsertPhotoOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 import EmojiPicker from "emoji-picker-react";
-import classes from "../CSS/Modal.module.css";
+import classes from "../../CSS/Modal.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { json } from "react-router";
-import { currentUserActions, sidebarActions } from "../store/redux-store";
-import handleFileChange from "../util/handleFileChange";
-import uploadImage from "../util/uploadImage";
-import queryClient, { updateDoc } from "../util/http";
+import { currentUserActions, sidebarActions } from "../../store/redux-store";
+import handleFileChange from "../../util/handleFileChange";
+import uploadImage from "../../util/uploadImage";
+import queryClient, { updateDoc } from "../../util/http";
 import ShortUniqueId from "short-unique-id";
 
 const Create = () => {

@@ -12,10 +12,7 @@ This project is an Instagram Clone Web App  built with React + Typescript, Frame
 - **Animations:** Enhanced visual appeal with subtle animations using Framer Motion.
 - **Authentication:** Integrated email and password authentication via Firebase Authentication.
 - **Data Storage:** Utilized Firebase Firestore for storing user data, including posts, likes, comments, captions, image references, saved posts, liked posts, followers, and followings.
-- **Image Storage:** Used Firebase Storage for storing user-generated images such as profile pictures and post images.
-- **Backend:** Implemented backend functionalities using Node.js, Express.js, and Firebase to ensure data management, verification, and request handling.
 - **Real-Time Communication:** Integrated real-time communication between users using the Stream Chat SDK.
-- **Request Caching:** Used React Query for effective request caching.
 
 ## Installation
 
